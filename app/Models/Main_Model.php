@@ -117,4 +117,33 @@ class Main_Model extends Model
         return $return;
     }
 
+    public function updateUser($data, $id)
+    {
+        $return = array();
+
+        $query = $this->db->table('user')
+        ->where('id', $id)->update($data); 
+
+        if($query == true)
+        {
+            $return['error'] = 0;
+            $return['id'] = $id;
+        }
+        else
+        {
+            $return['error'] = 1;
+            $return['id'] = $id;
+        }
+
+        return $return;
+    }
+
+    public function getUserData($id)
+    {
+        $query = $this->db->table('user')
+        ->where('id', $id);
+
+        return $query->get()->getResult();
+    }
+
 }

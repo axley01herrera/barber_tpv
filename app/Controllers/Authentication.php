@@ -9,8 +9,8 @@ class Authentication extends BaseController
 
     public function __construct()
     {
+        # CLEAR SESSION
         $this->session = session();
-        
         $this->session->set('id', '');
         $this->session->set('email', '');
         $this->session->set('role', '');
@@ -26,7 +26,7 @@ class Authentication extends BaseController
         $response = array();
         
         $email = $this->request->getPost('email');
-        $clave = $this->request->getPost('clave');
+        $clave = md5($this->request->getPost('clave'));
 
         if(!empty($email && !empty($clave)))
         {

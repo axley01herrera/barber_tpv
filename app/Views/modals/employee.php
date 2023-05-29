@@ -51,7 +51,8 @@
 </div>
 
 <script>
-    $('#btn-modal-submit').on('click', function () {
+
+    $('#btn-modal-submit').on('click', function () { // SUBMIT
         
         let resultCheckRequiredValues = checkRequiredValues('modal-required');
         let resultCheckEmailFormat = checkEmailFormat('modal-email');
@@ -72,7 +73,7 @@
                 
             }).done(function(jsonResponse) { console.log(jsonResponse)
 
-                if(jsonResponse.error == 0)
+                if(jsonResponse.error == 0) // SUCCESS
                 {
                     const Toast = Swal.mixin({
                         toast: true,
@@ -91,10 +92,12 @@
                         title: jsonResponse.msg
                     });
 
+                    dataTable.draw();
+
                     closeModal();
 
                 }
-                else
+                else // ERROR
                 {
                     const Toast = Swal.mixin({
                         toast: true,
@@ -115,7 +118,7 @@
 
                 }
 
-                if(jsonResponse.error == 2)
+                if(jsonResponse.error == 2) // SESSION EXPIRED
                     window.location.href = "<?php echo base_url('Authentication');?>";
 
                 
@@ -144,4 +147,5 @@
             });
         }
     });
+
 </script>
