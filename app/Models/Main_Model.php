@@ -164,6 +164,14 @@ class Main_Model extends Model
         return $return;
     }
 
+    public function checkProductExist($name)
+    {
+        $query = $this->db->table('product')
+        ->where('name', $name);
+
+        return $query->get()->getResult();
+    }
+
     public function getProductsProcessingData($params)
     {
         $query = $this->db->table('product');

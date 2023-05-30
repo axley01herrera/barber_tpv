@@ -423,17 +423,28 @@ class Main extends BaseController
 
         $objModel = new Main_Model;
 
-        $result = $objModel->createProducts($data);
+        $resultCheckProductExist = $objModel->checkProductExist($data['name']);
 
-        if($result['error'] == 0)
+        if(empty($resultCheckProductExist))
         {
-            $response['error'] = 0;
-            $response['msg'] = 'Producto añadido';
+            $result = $objModel->createProducts($data);
+
+            if($result['error'] == 0)
+            {
+                $response['error'] = 0;
+                $response['msg'] = 'Producto creado';
+            }
+            else
+            {
+                $response['error'] = 1;
+                $response['msg'] = 'Ha ocurrido un error en el proceso';
+            }
         }
         else
         {
-            $response['error'] = 1;
-            $response['msg'] = 'Ha ocurrido un error en el proceso';
+            $response['error'] = 3;
+            $response['msg'] = 'Ya existe un producto con el mismo nombre';
+
         }
 
         return json_encode($response);
