@@ -16,7 +16,7 @@
                     </div>
                     <div class="col-12 ">
                         <label for="txt-cost">Precio</label>
-                        <input id="txt-cost" type="text" class="form-control modal-required focus modal-email">
+                        <input id="txt-cost" type="text" class="form-control modal-required focus modal-email" onKeypress="if (event.keyCode < 45 || event.keyCode > 57) event.returnValue = false;">
                         <p id="msg-txt-cost" class="text-danger text-end"></p>
                     </div>
                 </div>
