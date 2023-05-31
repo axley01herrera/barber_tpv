@@ -217,9 +217,9 @@
             },
             dataType: "html",
             
-        }).done(function(htmlRespnse){
+        }).done(function(htmlResponse){
 
-            $('#main-modal').html(htmlRespnse);
+            $('#main-modal').html(htmlResponse);
 
         }).fail(function(error) {
 

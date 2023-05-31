@@ -15,9 +15,9 @@
             <table id="dataTable" class="table" style="width: 100%;">
                 <thead>
                     <tr>
-                        <th>Nombre</th>
-                        <th>Precio</th>
-                        <!--<th>Acciones</th> -->
+                        <th class="text-center">Nombre</th>
+                        <th class="text-center">Precio <span class="text-muted fst-italic">(EUR)</span></th>
+                        <th class="text-center">Acciones</th>
                     </tr>
                 </thead>
             </table>
@@ -85,7 +85,6 @@ $.ajax({
             {data: 'cost'},
         ],
     });
-
     
 </script>
 
