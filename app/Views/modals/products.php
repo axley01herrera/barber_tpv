@@ -11,7 +11,7 @@
                 <div class="row">
                     <div class="col-12 mt-2">
                         <label for="txt-name">Nombre</label>
-                        <input id="txt-name" type="text" class="form-control modal-required focus" value="">
+                        <input id="txt-name" type="text" class="form-control modal-required focus">
                         <p id="msg-txt-name" class="text-danger text-end"></p>
                     </div>
                     <div class="col-12 ">

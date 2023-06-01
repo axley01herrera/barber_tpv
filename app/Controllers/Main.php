@@ -35,6 +35,7 @@ class Main extends BaseController
         }
     }
 
+    # EMPLOYEE
     public function listEmployee()
     {
         # VERIFY SESSION
@@ -123,6 +124,8 @@ class Main extends BaseController
                 $clave = '<a class="btn-actions-clave" data-id="' . $result[$i]->id . '" data-action="update_clave" href="#"><span class="mdi mdi-key-minus" title="Cambiar Clave"></span></a>';
             }
 
+            $btn_edit = '<a class="btn-edit-employee" data-id="' . $result[$i]->id . '" href="#"><span class="mdi mdi-account-edit-outline" title="Actualizar Empleado"></span></a>';
+
             $col = array();
             $col['name'] = $result[$i]->name;
             $col['lastName'] = $result[$i]->last_name;
@@ -131,6 +134,7 @@ class Main extends BaseController
             $col['status'] = $status;
             $col['actionStatus'] = $switch_active_inactive;
             $col['actionClave'] = $clave;
+            $col['btnEdit'] = $btn_edit;
 
             $row[$i] =  $col;
         }
@@ -239,6 +243,13 @@ class Main extends BaseController
         {
             $data['title'] = 'Nuevo Empleado';
         }
+        elseif($data['action'] == 'update')
+        {
+            $objModel = new Main_Model;
+            $result = $objModel->getUserData($this->request->getPost('userID'));
+            $data['title'] = 'Actualizando '.$result[0]->name.' '.$result[0]->last_name;
+            $data['user_data'] = $result;
+        }
 
         return view('modals/employee', $data);
     }
@@ -312,13 +323,64 @@ class Main extends BaseController
         {
             $response['error'] = 3;
             $response['msg'] = 'Ya existe un empleado con el email introducido';
-
         }
 
         return json_encode($response);
     }
 
-    public function product()
+    public function updateEmployee()
+    {
+        $response = array();
+
+        # VERIFY SESSION
+        if(empty($this->session->get('id')))
+        {
+            $response['error'] = 2;
+            $response['msg'] = 'Sessión Expirada';
+
+            return json_encode($response);
+        }
+
+        $email = $this->request->getPost('email');
+        $id = $this->request->getPost('userID');
+
+        $objModel = new Main_Model;
+        $result_checkEmailExist = $objModel->checkEmailExist($email, $id);
+
+        if(empty($result_checkEmailExist))
+        {
+            $data = array();
+            $data['email'] = $email;
+            $data['name'] = $this->request->getPost('name');
+            $data['last_name'] = $this->request->getPost('lastName');
+            $data['role'] = $this->request->getPost('role');
+
+            $result_update = $objModel->updateUser($data, $id);
+
+            if($result_update['error'] == 0)
+            {
+                $response['error'] = 0;
+                $response['msg'] = 'Empleado Actualizado';
+            }
+            else
+            {
+                $response['error'] = 1;
+                $response['msg'] = 'Ha ocurrido un error en el proceso';
+            }
+
+        }
+        else
+        {
+            $response['error'] = 1;
+            $response['msg'] = 'Ya existe un empleado con el email introducido';
+        }
+
+        return json_encode($response);
+    }
+
+    # PRODUCT
+
+    public function listProduct()
     {
         # VERIFY SESSION
         if(empty($this->session->get('id')))
@@ -330,15 +392,10 @@ class Main extends BaseController
             return view('main/index', $data);
         }
 
-        $role = $this->session->get('role');
+        $data = array();
+        $data['page'] = 'main/list_products';
 
-        if($role == 1) // Admin
-        {
-            $data = array();
-            $data['page'] = 'main/list_products';
-
-            return view('main/index', $data);
-        }
+        return view('main/index', $data);
     }
 
     public function processingProducts()
@@ -362,14 +419,10 @@ class Main extends BaseController
 
         for($i = 0; $i < $totalRows; $i++) 
         { 
-
-            $btn_edit = '<a class="btn-editProduct" data-id="' . $result[$i]->id . '" href="#"><span class="mdi mdi-pencil" title="Actualizar Producto"></span></a>';
-           
-
             $col = array();
             $col['name'] = $result[$i]->name;
-            $col['cost'] = $result[$i]->cost;
-            $col['edit'] = $btn_edit;
+            $col['cost'] = '€ '.number_format((float) $result[$i]->cost, 2,".",',');
+            $col['actions'] = '';
 
             $row[$i] =  $col;
         }
@@ -405,14 +458,6 @@ class Main extends BaseController
         {
             $data['title'] = 'Nuevo Producto';
         }
-        else if($data['action'] == 'update')
-        {
-            $data['title'] = 'Actualizar ';
-
-            $objModel = new Main_Model;
-            $data['result'] = $objModel->getProductData($this->request->getPost('id'));
-
-        }
 
         return view('modals/products', $data);
     }
@@ -432,7 +477,7 @@ class Main extends BaseController
 
         $data = array();
         $data['name'] = trim(preg_replace("/[^A-Za-z0-9 ]/", "", $this->request->getPost('name'))); 
-        $data['cost'] = trim(preg_replace("/[^A-Za-z0-9 ]/", "", $this->request->getPost('cost')));
+        $data['cost'] = trim($this->request->getPost('cost'));
 
         $objModel = new Main_Model;
 
@@ -462,6 +507,8 @@ class Main extends BaseController
 
         return json_encode($response);
     }
+
+    # TPV
 
     public function tpv()
     {

@@ -25,10 +25,17 @@ class Main_Model extends Model
         return $query->get()->getResult(); 
     }
 
-    public function checkEmailExist($email)
+    public function checkEmailExist($email, $id = '') 
     {
         $query = $this->db->table('user')
         ->where('email', $email);
+
+        if(!empty($id))
+        {
+            $IDs = array();
+            $IDs[0] = $id;
+            $query->whereNotIn('id', $IDs);
+        }
 
         return $query->get()->getResult();
     }
@@ -172,14 +179,6 @@ class Main_Model extends Model
         return $query->get()->getResult();
     }
 
-    public function getProductData($id)
-    {
-        $query = $this->db->table('product')
-        ->where('id', $id);
-
-        return $query->get()->getResult();
-    }
-
     public function getProductsProcessingData($params)
     {
         $query = $this->db->table('product');
@@ -187,7 +186,7 @@ class Main_Model extends Model
         if(!empty($params['search']))
         {
             $query->like('name', $params['search']);
-            $query->orlike('cost', $params['search']);
+            $query->orLike('cost', $params['search']);
         }
 
         $query->offset($params['start']);

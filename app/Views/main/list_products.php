@@ -1,12 +1,12 @@
 <div class="row mt-5">
     <div class="col-12 ">
         <h1 class="text-primary">
-           Listado de Productos
+            Listado de Productos
         </h1>
     </div>
     <div class="col-12">
-        <?php echo view('main/component/btn_control_panel');?>
-        <button id="btn-createProducts" class="btn btn-sm btn-success">Añadir Productos</button>
+        <?php echo view('main/component/btn_control_panel'); ?>
+        <button id="btn-createProducts" class="btn btn-sm btn-success">Crear Producto</button>
     </div>
 </div>
 <div class="card mt-5">
@@ -16,8 +16,8 @@
                 <thead>
                     <tr>
                         <th>Nombre</th>
-                        <th>Precio <span class="text-muted fst-italic">(EUR)</span></th>
-                        <th class="text-center"></th>
+                        <th>Precio</th>
+                        <th></th>
                     </tr>
                 </thead>
             </table>
@@ -26,46 +26,45 @@
 </div>
 
 <script>
+    $('#btn-createProducts').on('click', function() { // CREATE EMPLOYEE
 
-$('#btn-createProducts').on('click', function () { // CREATE PRODUCT
+        $.ajax({
 
-$.ajax({
+            type: "post",
+            url: "<?php echo base_url('Main/showModalProducts'); ?>",
+            data: {
+                'action': 'create'
+            },
+            dataType: "html",
 
-    type: "post",
-    url: "<?php echo base_url('Main/showModalProducts');?>",
-    data: {
-        'action': 'create'
-    },
-    dataType: "html",
-    
-}).done(function(htmlResponse) {
+        }).done(function(htmlResponse) {
 
-    $('#main-modal').html(htmlResponse);
+            $('#main-modal').html(htmlResponse);
 
-}).fail(function(error) {
+        }).fail(function(error) {
 
-    const Toast = Swal.mixin({
-        toast: true,
-        position: 'top-end',
-        showConfirmButton: false,
-        timer: 3000,
-        timerProgressBar: true,
-        didOpen: (toast) => {
-            toast.addEventListener('mouseenter', Swal.stopTimer)
-            toast.addEventListener('mouseleave', Swal.resumeTimer)
-        }
-    })
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            })
 
-    Toast.fire({
-        icon: 'error',
-        title: 'Ha ocurrido un error'
+            Toast.fire({
+                icon: 'error',
+                title: 'Ha ocurrido un error'
+            });
+
+        });
+
     });
 
-});
-
-});
-
-    var dataTable = $('#dataTable').DataTable({ 
+    var dataTable = $('#dataTable').DataTable({
 
         destroy: true,
         processing: true,
@@ -73,41 +72,30 @@ $.ajax({
         responsive: true,
         bAutoWidth: true,
         pageLength: 10,
-        lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
-        language: { url: '<?php echo base_url('assets/libs/dataTable/es.json');?>'},
+        lengthMenu: [
+            [10, 25, 50, 100],
+            [10, 25, 50, 100]
+        ],
+        language: {
+            url: '<?php echo base_url('assets/libs/dataTable/es.json'); ?>'
+        },
         ajax: {
-            url: "<?php echo base_url('Main/processingProducts');?>",
+            url: "<?php echo base_url('Main/processingProducts'); ?>",
             type: "POST"
         },
-        order: [[0, 'asc']],
+        order: [
+            [0, 'asc']
+        ],
         columns: [
-            {data: 'name'},
-            {data: 'cost'},
-            {data: 'edit'},
+            {
+                data: 'name'
+            },
+            {
+                data: 'cost'
+            },
+            {
+                data: 'actions'
+            },
         ],
     });
-
-    dataTable.on('click', '.btn-editProduct', function (event) { // SET OR UPDATE CLAVE
-
-    event.preventDefault();
-
-    $.ajax({
-
-        type: "post",
-        url: "<?php echo base_url('Main/showModalProducts');?>",
-        data: {
-            'userID': $(this).attr('data-id'),
-            'action': 'update'
-        },
-        dataType: "html",
-        
-    }).done(function(htmlResponse){
-
-        $('#main-modal').html(htmlResponse);
-
-    }).fail(function(error) {
-
-    });
-    });
-    
 </script>
