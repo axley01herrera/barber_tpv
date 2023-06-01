@@ -153,4 +153,79 @@ class Main_Model extends Model
         return $query->get()->getResult();
     }
 
+    public function createProducts($data)
+    {
+        $return = array();
+
+        $query = $this->db->table('product')
+        ->insert($data);
+
+        if($query->resultID == true)
+        {
+            $return['error'] = 0;
+            $return['id'] = $query->connID->insert_id;
+        }
+        else
+            $return['error'] = 1;
+        
+        return $return;
+    }
+
+    public function checkProductExist($name)
+    {
+        $query = $this->db->table('product')
+        ->where('name', $name);
+
+        return $query->get()->getResult();
+    }
+
+    public function getProductsProcessingData($params)
+    {
+        $query = $this->db->table('product');
+
+        if(!empty($params['search']))
+        {
+            $query->like('name', $params['search']);
+            $query->orLike('cost', $params['search']);
+        }
+
+        $query->offset($params['start']);
+        $query->limit($params['length']);
+        $query->orderBy($this->getProductsProcessingSort($params['sortColumn'], $params['sortDir']));
+
+        return $query->get()->getResult();
+    }
+
+    public function getProductsProcessingSort($column, $dir)
+    {
+        $sort = '';
+
+        if($column == 0)
+        {
+            if($dir == 'asc')
+                $sort = 'name ASC'; 
+            else
+                $sort = 'name DESC'; 
+        }
+
+        if($column == 1)
+        {
+            if($dir == 'asc')
+                $sort = 'cost ASC'; 
+            else
+                $sort = 'cost DESC'; 
+        }
+
+        return $sort;
+    }
+
+    public function getTotalProducts()
+    {
+        $query = $this->db->table('product')
+        ->selectCount('id')
+        ->get()->getResult(); 
+
+        return $query[0]->id;
+    }
+
 }

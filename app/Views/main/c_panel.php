@@ -33,7 +33,7 @@
         </a>
     </div>
     <div class="col-12 col-lg-4 mt-5">
-        <a href="<?php echo base_url('Main/product');?>">
+        <a href="<?php echo base_url('Main/listProduct');?>">
             <div class="card">
                 <div class="mt-2">
                     <img class="card-img-top img-fluid" src="<?php echo base_url('assets/images/small/img-2.jpg')?>" alt="Card image cap">

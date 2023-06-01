@@ -35,6 +35,7 @@ class Main extends BaseController
         }
     }
 
+    # EMPLOYEE
     public function listEmployee()
     {
         # VERIFY SESSION
@@ -366,6 +367,7 @@ class Main extends BaseController
                 $response['error'] = 1;
                 $response['msg'] = 'Ha ocurrido un error en el proceso';
             }
+
         }
         else
         {
@@ -376,7 +378,9 @@ class Main extends BaseController
         return json_encode($response);
     }
 
-    public function product()
+    # PRODUCT
+
+    public function listProduct()
     {
         # VERIFY SESSION
         if(empty($this->session->get('id')))
@@ -388,16 +392,123 @@ class Main extends BaseController
             return view('main/index', $data);
         }
 
-        $role = $this->session->get('role');
+        $data = array();
+        $data['page'] = 'main/list_products';
 
-        if($role == 1) // Admin
+        return view('main/index', $data);
+    }
+
+    public function processingProducts()
+    {
+        $dataTableRequest = $_REQUEST;
+
+        $params = array();
+        $params['draw'] = $dataTableRequest['draw'];
+        $params['start'] = $dataTableRequest['start'];
+        $params['length'] = $dataTableRequest['length'];
+        $params['search'] = $dataTableRequest['search']['value'];
+        $params['sortColumn'] = $dataTableRequest['order'][0]['column'];
+        $params['sortDir'] = $dataTableRequest['order'][0]['dir'];
+
+        $row = array();
+        $totalRecords = 0;
+
+        $objModel = new Main_Model;
+        $result = $objModel->getProductsProcessingData($params); 
+        $totalRows = sizeof($result );
+
+        for($i = 0; $i < $totalRows; $i++) 
+        { 
+            $col = array();
+            $col['name'] = $result[$i]->name;
+            $col['cost'] = '€ '.number_format((float) $result[$i]->cost, 2,".",',');
+            $col['actions'] = '';
+
+            $row[$i] =  $col;
+        }
+
+        if($totalRows > 0)
+            $totalRecords = $objModel->getTotalProducts();
+
+        $data = array();
+        $data['draw'] = $dataTableRequest['draw'];
+        $data['recordsTotal'] = intval($totalRecords);
+        $data['recordsFiltered'] = intval($totalRecords);
+        $data['data'] = $row;
+
+        return json_encode($data);
+    }
+
+    public function showModalProducts()
+    {
+        # VERIFY SESSION
+        if(empty($this->session->get('id')))
         {
             $data = array();
-            $data['page'] = 'main/product';
+            $data['page'] = 'main/logout';
+            $data['msg'] = 'Sessión Expirada';
 
             return view('main/index', $data);
         }
+
+        $data = array();
+        $data['action'] = $this->request->getPost('action');
+
+        if($data['action'] == 'create')
+        {
+            $data['title'] = 'Nuevo Producto';
+        }
+
+        return view('modals/products', $data);
     }
+
+    public function createProducts()
+    {
+        $response = array();
+
+        # VERIFY SESSION
+        if(empty($this->session->get('id')))
+        {
+            $response['error'] = 2;
+            $response['msg'] = 'Sessión Expirada';
+
+            return json_encode($response);
+        }
+
+        $data = array();
+        $data['name'] = trim(preg_replace("/[^A-Za-z0-9 ]/", "", $this->request->getPost('name'))); 
+        $data['cost'] = trim($this->request->getPost('cost'));
+
+        $objModel = new Main_Model;
+
+        $resultCheckProductExist = $objModel->checkProductExist($data['name']);
+
+        if(empty($resultCheckProductExist))
+        {
+            $result = $objModel->createProducts($data);
+
+            if($result['error'] == 0)
+            {
+                $response['error'] = 0;
+                $response['msg'] = 'Producto creado';
+            }
+            else
+            {
+                $response['error'] = 1;
+                $response['msg'] = 'Ha ocurrido un error en el proceso';
+            }
+        }
+        else
+        {
+            $response['error'] = 3;
+            $response['msg'] = 'Ya existe un producto con el mismo nombre';
+
+        }
+
+        return json_encode($response);
+    }
+
+    # TPV
 
     public function tpv()
     {
