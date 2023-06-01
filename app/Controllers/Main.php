@@ -419,10 +419,14 @@ class Main extends BaseController
 
         for($i = 0; $i < $totalRows; $i++) 
         { 
+
+            $btn_editProduct = '<a class="btn-editProduct" data-id="' . $result[$i]->id . '" href="#"><span class="mdi mdi-pencil" title="Actualizar Producto"></span></a>';
+
+
             $col = array();
             $col['name'] = $result[$i]->name;
             $col['cost'] = '€ '.number_format((float) $result[$i]->cost, 2,".",',');
-            $col['actions'] = '';
+            $col['actions'] = $btn_editProduct;
 
             $row[$i] =  $col;
         }
@@ -458,8 +462,66 @@ class Main extends BaseController
         {
             $data['title'] = 'Nuevo Producto';
         }
+        else if($data['action'] == 'update')
+        {
+            $data['title'] = 'Actualizar Producto';
+
+            $objModel = new Main_Model;
+            $result = $objModel->getProductData($this->request->getPost('userID'));
+            $data['title'] = 'Actualizar '.$result[0]->name;
+            $data['user_data'] = $result;
+        }
 
         return view('modals/products', $data);
+    }
+
+    public function updateProduct()
+    {
+        $response = array();
+
+        # VERIFY SESSION
+        if(empty($this->session->get('id')))
+        {
+            $response['error'] = 2;
+            $response['msg'] = 'Sessión Expirada';
+
+            return json_encode($response);
+        }
+
+        $name = $this->request->getPost('name');
+        $id = $this->request->getPost('userID');
+
+        $objModel = new Main_Model;
+        $result_checkProductExist = $objModel->checkProductExist($name, $id);
+
+        if(empty($result_checkProductExist))
+        {
+            $data = array();
+            $data['id'] = $id;
+            $data['name'] = $this->request->getPost('name');
+            $data['cost'] = $this->request->getPost('cost');
+
+            $result_update = $objModel->updateProduct($data, $id);
+
+            if($result_update['error'] == 0)
+            {
+                $response['error'] = 0;
+                $response['msg'] = 'Producto Actualizado';
+            }
+            else
+            {
+                $response['error'] = 1;
+                $response['msg'] = 'Ha ocurrido un error en el proceso';
+            }
+
+        }
+        else
+        {
+            $response['error'] = 1;
+            $response['msg'] = 'Ya existe un Producto con el mismo nombre';
+        }
+
+        return json_encode($response);
     }
 
     public function createProducts()

@@ -171,10 +171,17 @@ class Main_Model extends Model
         return $return;
     }
 
-    public function checkProductExist($name)
+    public function checkProductExist($name, $id='')
     {
         $query = $this->db->table('product')
         ->where('name', $name);
+
+        if(!empty($id))
+        {
+            $IDs = array();
+            $IDs[0] = $id;
+            $query->whereNotIn('id', $IDs);
+        }
 
         return $query->get()->getResult();
     }
@@ -194,6 +201,35 @@ class Main_Model extends Model
         $query->orderBy($this->getProductsProcessingSort($params['sortColumn'], $params['sortDir']));
 
         return $query->get()->getResult();
+    }
+
+    public function getProductData($id)
+    {
+        $query = $this->db->table('product')
+        ->where('id', $id);
+
+        return $query->get()->getResult();
+    }
+
+    public function updateProduct($data, $id)
+    {
+        $return = array();
+
+        $query = $this->db->table('product')
+        ->where('id', $id)->update($data); 
+
+        if($query == true)
+        {
+            $return['error'] = 0;
+            $return['id'] = $id;
+        }
+        else
+        {
+            $return['error'] = 1;
+            $return['id'] = $id;
+        }
+
+        return $return;
     }
 
     public function getProductsProcessingSort($column, $dir)

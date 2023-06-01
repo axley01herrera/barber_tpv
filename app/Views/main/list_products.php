@@ -98,4 +98,28 @@
             },
         ],
     });
+
+    dataTable.on('click', '.btn-editProduct', function (event) { // SET OR UPDATE CLAVE
+
+    event.preventDefault();
+
+    $.ajax({
+
+        type: "post",
+        url: "<?php echo base_url('Main/showModalProducts');?>",
+        data: {
+            'userID': $(this).attr('data-id'),
+            'action': 'update',
+        },
+        dataType: "html",
+        
+    }).done(function(htmlResponse){
+
+        $('#main-modal').html(htmlResponse);
+
+    }).fail(function(error) {
+
+    });
+    });
+
 </script>
