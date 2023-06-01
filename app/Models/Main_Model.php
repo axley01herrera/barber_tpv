@@ -228,4 +228,52 @@ class Main_Model extends Model
         return $query[0]->id;
     }
 
+    public function getProducts()
+    {
+        $query = $this->db->table('product')
+        ->select('*');
+
+        return $query->get()->getResult();
+    }
+
+    public function createBasket($data)
+    {
+        $query = $this->db->table('basket')
+        ->insert($data);
+
+        if($query->resultID == true)
+        {
+            $return['error'] = 0;
+            $return['id'] = $query->connID->insert_id;
+        }
+        else
+            $return['error'] = 1;
+        
+        return $return;
+    }
+
+    public function createBasketProduct($data)
+    {
+        $query = $this->db->table('basket_product')
+        ->insert($data);
+
+        if($query->resultID == true)
+        {
+            $return['error'] = 0;
+            $return['id'] = $query->connID->insert_id;
+        }
+        else
+            $return['error'] = 1;
+        
+        return $return;
+    }
+
+    public function getBasketView($basketID)
+    {
+        $query = $this->db->table('basket_view')
+        ->where('basket_id', $basketID);
+
+        return $query->get()->getResult();
+    }
+
 }

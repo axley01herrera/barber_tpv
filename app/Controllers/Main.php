@@ -502,7 +502,6 @@ class Main extends BaseController
         {
             $response['error'] = 3;
             $response['msg'] = 'Ya existe un producto con el mismo nombre';
-
         }
 
         return json_encode($response);
@@ -516,20 +515,71 @@ class Main extends BaseController
         if(empty($this->session->get('id')))
         {
             $data = array();
-            $data['page'] = 'dashboard/logout';
+            $data['page'] = 'main/logout';
             $data['msg'] = 'Sessión Expirada';
 
-            return view('dashboard/index', $data);
+            return view('main/index', $data);
         }
 
-        $role = $this->session->get('role');
+        $data_basket = array();
+        $data_basket['user_id'] = $this->session->get('id');
 
-        if($role == 1) // Admin
+        $objModel = new Main_Model;
+        $result_create_basket = $objModel->createBasket($data_basket);
+
+        if($result_create_basket['error'] == 0)
         {
             $data = array();
-            $data['page'] = 'dashboard/tpv';
-
-            return view('dashboard/index', $data);
+            $data['basket_id'] = $result_create_basket['id'];
+            $data['page'] = 'main/tpv';
         }
+
+        return view('main/index', $data); 
     }
+
+    public function returnBasket()
+    {
+        $objModel = new Main_Model;
+        $basket_id = $this->request->getPost('basket_id');
+
+        $data['basket'] = $objModel->getBasketView($basket_id);
+
+        return view('main/tpv_basket', $data);
+    }
+
+    public function returnProducts()
+    {
+        $objModel = new Main_Model;
+
+        $data = array();
+        $data['products'] = $objModel->getProducts();
+        $data['count_products'] = sizeof($data['products']);
+
+        return view('main/tpv_products', $data);
+    }
+
+    public function createBasketProduct()
+    {
+        $objModel = new Main_Model;
+
+        $data = array();
+        $data['basket_id'] = $this->request->getPost('basket_id');
+        $data['product_id'] = $this->request->getPost('product_id');
+        
+        $result_create_basket_product = $objModel->createBasketProduct($data);
+
+        if($result_create_basket_product['error'] == 0)
+        {
+            $response['error'] = 0;
+            $response['msg'] = 'Producto Añadido a la Lista';
+        }
+        else
+        {
+            $response['error'] = 1;
+            $response['msg'] = 'Ha ocurrido un error en el proceso';
+        }
+
+        return json_encode($response);
+    }
+
 }
