@@ -362,9 +362,14 @@ class Main extends BaseController
 
         for($i = 0; $i < $totalRows; $i++) 
         { 
+
+            $btn_edit = '<a class="btn-editProduct" data-id="' . $result[$i]->id . '" href="#"><span class="mdi mdi-pencil" title="Actualizar Producto"></span></a>';
+           
+
             $col = array();
             $col['name'] = $result[$i]->name;
             $col['cost'] = $result[$i]->cost;
+            $col['edit'] = $btn_edit;
 
             $row[$i] =  $col;
         }
@@ -399,6 +404,14 @@ class Main extends BaseController
         if($data['action'] == 'create')
         {
             $data['title'] = 'Nuevo Producto';
+        }
+        else if($data['action'] == 'update')
+        {
+            $data['title'] = 'Actualizar ';
+
+            $objModel = new Main_Model;
+            $data['result'] = $objModel->getProductData($this->request->getPost('id'));
+
         }
 
         return view('modals/products', $data);

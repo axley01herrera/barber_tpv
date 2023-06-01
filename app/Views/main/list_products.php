@@ -15,9 +15,9 @@
             <table id="dataTable" class="table" style="width: 100%;">
                 <thead>
                     <tr>
-                        <th class="text-center">Nombre</th>
-                        <th class="text-center">Precio <span class="text-muted fst-italic">(EUR)</span></th>
-                        <th class="text-center">Acciones</th>
+                        <th>Nombre</th>
+                        <th>Precio <span class="text-muted fst-italic">(EUR)</span></th>
+                        <th class="text-center"></th>
                     </tr>
                 </thead>
             </table>
@@ -27,7 +27,7 @@
 
 <script>
 
-$('#btn-createProducts').on('click', function () { // CREATE EMPLOYEE
+$('#btn-createProducts').on('click', function () { // CREATE PRODUCT
 
 $.ajax({
 
@@ -83,9 +83,31 @@ $.ajax({
         columns: [
             {data: 'name'},
             {data: 'cost'},
+            {data: 'edit'},
         ],
+    });
+
+    dataTable.on('click', '.btn-editProduct', function (event) { // SET OR UPDATE CLAVE
+
+    event.preventDefault();
+
+    $.ajax({
+
+        type: "post",
+        url: "<?php echo base_url('Main/showModalProducts');?>",
+        data: {
+            'userID': $(this).attr('data-id'),
+            'action': 'update'
+        },
+        dataType: "html",
+        
+    }).done(function(htmlResponse){
+
+        $('#main-modal').html(htmlResponse);
+
+    }).fail(function(error) {
+
+    });
     });
     
 </script>
-
-

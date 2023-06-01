@@ -22,6 +22,7 @@
                         <th class="text">Desactivar / Activar</th>
                         <th class=""></th>
                         <th class="text-center"></th>
+                        <th class="text-center"></th>
                     </tr>
                 </thead>
             </table>

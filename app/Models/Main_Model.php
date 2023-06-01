@@ -172,6 +172,14 @@ class Main_Model extends Model
         return $query->get()->getResult();
     }
 
+    public function getProductData($id)
+    {
+        $query = $this->db->table('product')
+        ->where('id', $id);
+
+        return $query->get()->getResult();
+    }
+
     public function getProductsProcessingData($params)
     {
         $query = $this->db->table('product');
@@ -179,6 +187,7 @@ class Main_Model extends Model
         if(!empty($params['search']))
         {
             $query->like('name', $params['search']);
+            $query->orlike('cost', $params['search']);
         }
 
         $query->offset($params['start']);
