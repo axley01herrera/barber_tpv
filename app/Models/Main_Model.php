@@ -25,10 +25,17 @@ class Main_Model extends Model
         return $query->get()->getResult(); 
     }
 
-    public function checkEmailExist($email)
+    public function checkEmailExist($email, $id = '') 
     {
         $query = $this->db->table('user')
         ->where('email', $email);
+
+        if(!empty($id))
+        {
+            $IDs = array();
+            $IDs[0] = $id;
+            $query->whereNotIn('id', $IDs);
+        }
 
         return $query->get()->getResult();
     }

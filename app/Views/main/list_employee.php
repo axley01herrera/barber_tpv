@@ -22,6 +22,7 @@
                         <th class="text">Desactivar / Activar</th>
                         <th class=""></th>
                         <th class="text-center"></th>
+                        <th class="text-center"></th>
                     </tr>
                 </thead>
             </table>
@@ -91,7 +92,8 @@
             {data: 'role', class: 'text-center', searchable: false},
             {data: 'actionStatus', orderable: false, searchable: false},
             {data: 'status', orderable: false, searchable: false},
-            {data: 'actionClave', class: 'text-center', orderable: false, searchable: false}
+            {data: 'actionClave', class: 'text-center', orderable: false, searchable: false},
+            {data: 'btnEdit', class: 'text-center', orderable: false, searchable: false}
         ],
     });
 
@@ -214,6 +216,29 @@
             data: {
                 'userID': $(this).attr('data-id'),
                 'action': $(this).attr('data-action'),
+            },
+            dataType: "html",
+            
+        }).done(function(htmlRespnse){
+
+            $('#main-modal').html(htmlRespnse);
+
+        }).fail(function(error) {
+
+        });
+    });
+
+    dataTable.on('click', '.btn-edit-employee', function (event) { // SET OR UPDATE CLAVE
+
+        event.preventDefault();
+
+        $.ajax({
+
+            type: "post",
+            url: "<?php echo base_url('Main/showModalEmployee');?>",
+            data: {
+                'userID': $(this).attr('data-id'),
+                'action': 'update',
             },
             dataType: "html",
             
