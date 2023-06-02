@@ -126,6 +126,9 @@ class Main extends BaseController
 
             $btn_edit = '<a class="btn-edit-employee" data-id="' . $result[$i]->id . '" href="#"><span class="mdi mdi-account-edit-outline" title="Actualizar Empleado"></span></a>';
 
+            $btn_delete = '<a class="btn-delete-employee" data-id="' . $result[$i]->id . '" href="#"><span class="mdi mdi-delete" title="Eliminar Empleado"></span></a>';
+
+
             $col = array();
             $col['name'] = $result[$i]->name;
             $col['lastName'] = $result[$i]->last_name;
@@ -135,6 +138,7 @@ class Main extends BaseController
             $col['actionStatus'] = $switch_active_inactive;
             $col['actionClave'] = $clave;
             $col['btnEdit'] = $btn_edit;
+            $col['btnDelete'] = $btn_delete;
 
             $row[$i] =  $col;
         }
@@ -247,7 +251,7 @@ class Main extends BaseController
         {
             $objModel = new Main_Model;
             $result = $objModel->getUserData($this->request->getPost('userID'));
-            $data['title'] = 'Actualizando '.$result[0]->name.' '.$result[0]->last_name;
+            $data['title'] = 'Actualizando  a '.$result[0]->name.' '.$result[0]->last_name;
             $data['user_data'] = $result;
         }
 
@@ -377,6 +381,38 @@ class Main extends BaseController
 
         return json_encode($response);
     }
+
+    public function deleteEmployee()
+    {
+        # VERIFY SESSION
+        if(empty($this->session->get('id')))
+        {
+            $response['error'] = 2;
+            $response['msg'] = 'Sessión Expirada';
+
+            return json_encode($response);
+        }
+
+        $id = $this->request->getPost('userID');
+
+        $objModel = new Main_Model;
+        $result = $objModel->deleteUser($id);
+
+        if($result == true)
+        {
+            $response['error'] = 0;
+            $response['msg'] = 'Empleado Eliminado';
+        }
+        else
+        {
+            $response['error'] = 1;
+            $response['msg'] = 'Ha ocurrido un error en el proceso';
+        }
+
+            return json_encode($response);
+
+        }
+
 
     # PRODUCT
 

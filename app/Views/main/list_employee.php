@@ -23,6 +23,7 @@
                         <th class=""></th>
                         <th class="text-center"></th>
                         <th class="text-center"></th>
+                        <th class="text-center"></th>
                     </tr>
                 </thead>
             </table>
@@ -93,7 +94,8 @@
             {data: 'actionStatus', orderable: false, searchable: false},
             {data: 'status', orderable: false, searchable: false},
             {data: 'actionClave', class: 'text-center', orderable: false, searchable: false},
-            {data: 'btnEdit', class: 'text-center', orderable: false, searchable: false}
+            {data: 'btnEdit', class: 'text-center', orderable: false, searchable: false},
+            {data: 'btnDelete', class: 'text-center', orderable: false, searchable: false}
         ],
     });
 
@@ -228,7 +230,7 @@
         });
     });
 
-    dataTable.on('click', '.btn-edit-employee', function (event) { // SET OR UPDATE CLAVE
+    dataTable.on('click', '.btn-edit-employee', function (event) { // EDIT EMPLOYEE
 
         event.preventDefault();
 
@@ -245,6 +247,31 @@
         }).done(function(htmlRespnse){
 
             $('#main-modal').html(htmlRespnse);
+
+        }).fail(function(error) {
+
+        });
+    });
+
+    dataTable.on('click', '.btn-delete-employee', function (event) { // SET OR UPDATE CLAVE
+
+        event.preventDefault();
+
+        $.ajax({
+
+            type: "post",
+            url: "<?php echo base_url('Main/deleteEmployee');?>",
+            data: {
+                'userID': $(this).attr('data-id'),
+                'action': 'delete',
+},
+            dataType: "json",
+            
+        }).done(function(jsonResponse){
+
+            dataTable.draw();
+
+            $('#main-modal').html(jsonResponse);
 
         }).fail(function(error) {
 

@@ -145,6 +145,16 @@ class Main_Model extends Model
         return $return;
     }
 
+    public function deleteUser($id)
+    {
+
+        $query = $this->db->table('user')
+        ->where('id', $id)
+        ->delete(); 
+
+        return $query;
+    }
+
     public function getUserData($id)
     {
         $query = $this->db->table('user')

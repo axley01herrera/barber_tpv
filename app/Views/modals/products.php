@@ -39,7 +39,7 @@
             if(action == 'create')
                 ajaxCreate();
             else if(action == 'update')
-                ajxUpdate();
+                ajaxUpdate();
                 
          }
     });
@@ -129,7 +129,7 @@
 
     }
 
-    function ajxUpdate() {
+    function ajaxUpdate() {
 
         $.ajax({
 
