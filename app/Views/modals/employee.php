@@ -176,6 +176,7 @@
                 'lastName': $('#txt-lastName').val(),
                 'email': $('#txt-email').val(),
                 'role': $('#sel-role').val(),
+                'password': $('#txt-password').val(),
                 'userID': '<?php echo @$user_data[0]->id; ?>',
             },
             dataType: "json",

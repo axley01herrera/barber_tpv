@@ -113,16 +113,6 @@ class Main extends BaseController
                 $role = '<span class="badge badge-soft-secondary">Básico</span>';
             }
 
-            $clave = '';
-
-            if(empty($result[$i]->clave))
-            {
-                $clave = '<a class="btn-actions-clave" data-id="' . $result[$i]->id . '" data-action="set_clave" href="#"><span class="mdi mdi-key" title="Crear Clave"></span></a>';
-            }
-            else
-            {
-                $clave = '<a class="btn-actions-clave" data-id="' . $result[$i]->id . '" data-action="update_clave" href="#"><span class="mdi mdi-key-minus" title="Cambiar Clave"></span></a>';
-            }
 
             $btn_edit = '<a class="btn-edit-employee" data-id="' . $result[$i]->id . '" href="#"><span class="mdi mdi-account-edit-outline" title="Actualizar Empleado"></span></a>';
 
@@ -137,7 +127,6 @@ class Main extends BaseController
             $col['role'] = $role;
             $col['status'] = $status;
             $col['actionStatus'] = $switch_active_inactive;
-            $col['actionClave'] = $clave;
             $col['btnEdit'] = $btn_edit;
             $col['btnDelete'] = $btn_delete;
 
@@ -196,39 +185,6 @@ class Main extends BaseController
         return json_encode($response);
     }
 
-    public function setClave()
-    {
-        $response = array();
-
-        # VERIFY SESSION
-        if(empty($this->session->get('id')))
-        {
-            $response['error'] = 2;
-            $response['msg'] = 'Sessión Expirada';
-
-            return json_encode($response);
-        }
-
-        $data = array();
-        $data['clave'] = md5($this->request->getPost('clave'));
-
-        $objModel = new Main_Model;
-        $result = $objModel->updateUser($data, $this->request->getPost('userID'));
-
-        if($result['error'] == 0)
-        {
-            $response['error'] = 0;
-            $response['msg'] = 'Proceso realizado con éxito';
-        }
-        else
-        {
-            $response['error'] = 1;
-            $response['msg'] = 'Ha ocurrido un error en el proceso';
-        }
-
-        return json_encode($response);
-    }
-
     public function showModalEmployee()
     {
         # VERIFY SESSION
@@ -257,34 +213,6 @@ class Main extends BaseController
         }
 
         return view('modals/employee', $data);
-    }
-
-    public function showModalSetClave()
-    {
-        # VERIFY SESSION
-        if(empty($this->session->get('id')))
-        {
-            $data = array();
-            $data['page'] = 'main/logout';
-            $data['msg'] = 'Sessión Expirada';
-
-            return view('main/index', $data);
-        }
-
-        $data = array();
-        $data['userID'] = $this->request->getPost('userID');
-        $data['action'] = $this->request->getPost('action');
-
-        $objModel = new Main_Model;
-        $userData = $objModel->getUserData($data['userID']); 
-        
-
-        if($data['action'] == 'set_clave')
-            $data['title'] = 'Creando Contraseña para '.$userData[0]->name.' '.$userData[0]->last_name;
-        else
-            $data['title'] = 'Actualizando Contraseña de '.$userData[0]->name.' '.$userData[0]->last_name;
-
-        return view('modals/setClave', $data);
     }
 
     public function createEmployee()
@@ -360,6 +288,7 @@ class Main extends BaseController
             $data['name'] = $this->request->getPost('name');
             $data['last_name'] = $this->request->getPost('lastName');
             $data['role'] = $this->request->getPost('role');
+            $data['clave'] =md5($this->request->getPost('password'));
 
             $result_update = $objModel->updateUser($data, $id);
 
