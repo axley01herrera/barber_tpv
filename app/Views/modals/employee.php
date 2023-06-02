@@ -31,6 +31,11 @@
                             <option <?php if (@$user_data[0]->role == 1) echo "selected"; ?> value="1">Administrador</option>
                             <option <?php if (@$user_data[0]->role == 2) echo "selected"; ?> value="2">Básico</option>
                         </select>
+                    <div class="col-12 ">
+                        <label for="txt-password">Contraseña</label>
+                        <input id="txt-password" type="password" class="form-control modal-required focus modal-password" value="<?php echo @$user_data[0]->clave; ?>" />
+                        <p id="msg-txt-password" class="text-danger text-end"></p>
+                    </div>
                         <p id="msg-sel-role" class="text-danger text-end"></p>
                     </div>
 
@@ -79,6 +84,7 @@
                 'lastName': $('#txt-lastName').val(),
                 'email': $('#txt-email').val(),
                 'role': $('#sel-role').val(),
+                'password': $('#txt-password').val()
             },
             dataType: "json",
 

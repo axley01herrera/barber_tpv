@@ -133,6 +133,7 @@ class Main extends BaseController
             $col['name'] = $result[$i]->name;
             $col['lastName'] = $result[$i]->last_name;
             $col['email'] = $result[$i]->email;
+            $col['password'] = $result[$i]->clave; 
             $col['role'] = $role;
             $col['status'] = $status;
             $col['actionStatus'] = $switch_active_inactive;
@@ -304,6 +305,7 @@ class Main extends BaseController
         $data['last_name'] = trim(preg_replace("/[^A-Za-z0-9 ]/", "", $this->request->getPost('lastName')));
         $data['email'] = trim($this->request->getPost('email'));
         $data['role'] = (int) $this->request->getPost('role');
+        $data['clave'] = md5( $this->request->getPost('password'));
         
         $objModel = new Main_Model;
         $resultCheckEmailExist = $objModel->checkEmailExist($data['email']);

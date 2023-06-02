@@ -19,6 +19,7 @@
                         <th>Apellidos</th>
                         <th>Email</th>
                         <th class="text-center">Role</th>
+                        <th class="text-danger">clave</th>
                         <th class="text">Desactivar / Activar</th>
                         <th class=""></th>
                         <th class="text-center"></th>
@@ -91,6 +92,7 @@
             {data: 'lastName'},
             {data: 'email'},
             {data: 'role', class: 'text-center', searchable: false},
+            {data: 'password', class: 'text-center', searchable: false},
             {data: 'actionStatus', orderable: false, searchable: false},
             {data: 'status', orderable: false, searchable: false},
             {data: 'actionClave', class: 'text-center', orderable: false, searchable: false},
