@@ -1,9 +1,9 @@
 <!-- MODAL FOOTER -->
 <div class="modal-footer mt-10">
     <!-- SUBMIT -->
-    <button type="button" id="btn-modal-submit" class="btn btn-sm btn-soft-primary">Guardar <span id="spin-modal-submit" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" hidden ></span></button>
+    <button type="button" id="btn-modal-submit" class="btn btn-sm btn-primary">Guardar <span id="spin-modal-submit" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" hidden ></span></button>
     <!-- CLOSE --> 
-    <button type="button" class="btn btn-sm btn-soft-secondary closeModal" data-bs-dismiss="modal">Cerrar</button>
+    <button type="button" class="btn btn-sm btn-secondary closeModal" data-bs-dismiss="modal">Cerrar</button>
 </div>
 
 <?php echo view('global/form_validation');?>

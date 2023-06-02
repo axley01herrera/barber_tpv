@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `email` varchar(100) COLLATE utf8_spanish_ci NOT NULL,
   `clave` varchar(999) COLLATE utf8_spanish_ci DEFAULT NULL,
   `name` varchar(100) COLLATE utf8_spanish_ci NOT NULL,
-  `last_name` varchar(100) COLLATE utf8_spanish_ci NOT NULL,
+  `lastName` varchar(100) COLLATE utf8_spanish_ci NOT NULL,
   `role` int(1) NOT NULL COMMENT '1 = Administrador 2 = Basico',
   `status` int(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
@@ -74,7 +74,7 @@ CREATE TABLE IF NOT EXISTS `user` (
 -- Volcado de datos para la tabla `user`
 --
 
-INSERT INTO `user` (`id`, `email`, `clave`, `name`, `last_name`, `role`, `status`) VALUES
+INSERT INTO `user` (`id`, `email`, `clave`, `name`, `lastName`, `role`, `status`) VALUES
 (1, 'axley01herrera@gmail.com', '202cb962ac59075b964b07152d234b70', 'Axley', 'Herrera', 1, 1),
 (2, 'test@email.com', '123', 'Miguel', 'Alfonso', 1, 1),
 (3, 'carlos@email.com', NULL, 'Carlos', 'Osbaldo', 2, 1),

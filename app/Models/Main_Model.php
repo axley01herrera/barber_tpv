@@ -6,11 +6,11 @@ use CodeIgniter\CLI\Console;
 use CodeIgniter\Model;
 use CodeIgniter\Database\MySQLi\Builder;
 
-class Main_Model extends Model 
+class Main_Model extends Model
 {
     protected $db;
-    
-    function  __construct () 
+
+    function  __construct()
     {
         parent::__construct();
         $this->db = \Config\Database::connect();
@@ -19,19 +19,18 @@ class Main_Model extends Model
     public function verifyCredentials($email, $clave)
     {
         $query = $this->db->table('user')
-        ->where('email', $email)
-        ->where('clave', $clave);
+            ->where('email', $email)
+            ->where('clave', $clave);
 
-        return $query->get()->getResult(); 
+        return $query->get()->getResult();
     }
 
-    public function checkEmailExist($email, $id = '') 
+    public function checkEmailExist($email, $id = '')
     {
         $query = $this->db->table('user')
-        ->where('email', $email);
+            ->where('email', $email);
 
-        if(!empty($id))
-        {
+        if (!empty($id)) {
             $IDs = array();
             $IDs[0] = $id;
             $query->whereNotIn('id', $IDs);
@@ -43,8 +42,8 @@ class Main_Model extends Model
     public function getTotalUser()
     {
         $query = $this->db->table('user')
-        ->selectCount('id')
-        ->get()->getResult(); 
+            ->selectCount('id')
+            ->get()->getResult();
 
         return $query[0]->id;
     }
@@ -53,10 +52,9 @@ class Main_Model extends Model
     {
         $query = $this->db->table('user');
 
-        if(!empty($params['search']))
-        {
+        if (!empty($params['search'])) {
             $query->like('name', $params['search']);
-            $query->orLike('last_name', $params['search']);
+            $query->orLike('lastName', $params['search']);
             $query->orLike('email', $params['search']);
         }
 
@@ -71,36 +69,32 @@ class Main_Model extends Model
     {
         $sort = '';
 
-        if($column == 0)
-        {
-            if($dir == 'asc')
-                $sort = 'name ASC'; 
+        if ($column == 0) {
+            if ($dir == 'asc')
+                $sort = 'name ASC';
             else
-                $sort = 'name DESC'; 
+                $sort = 'name DESC';
         }
 
-        if($column == 1)
-        {
-            if($dir == 'asc')
-                $sort = 'last_name ASC'; 
+        if ($column == 1) {
+            if ($dir == 'asc')
+                $sort = 'lastName ASC';
             else
-                $sort = 'last_name DESC'; 
+                $sort = 'lastName DESC';
         }
 
-        if($column == 2)
-        {
-            if($dir == 'asc')
-                $sort = 'email ASC'; 
+        if ($column == 2) {
+            if ($dir == 'asc')
+                $sort = 'email ASC';
             else
-                $sort = 'email DESC'; 
+                $sort = 'email DESC';
         }
 
-        if($column == 3)
-        {
-            if($dir == 'asc')
-                $sort = 'status ASC'; 
+        if ($column == 3) {
+            if ($dir == 'asc')
+                $sort = 'status ASC';
             else
-                $sort = 'status DESC'; 
+                $sort = 'status DESC';
         }
 
         return $sort;
@@ -111,16 +105,14 @@ class Main_Model extends Model
         $return = array();
 
         $query = $this->db->table('user')
-        ->insert($data);
+            ->insert($data);
 
-        if($query->resultID == true)
-        {
+        if ($query->resultID == true) {
             $return['error'] = 0;
             $return['id'] = $query->connID->insert_id;
-        }
-        else
+        } else
             $return['error'] = 1;
-        
+
         return $return;
     }
 
@@ -129,6 +121,133 @@ class Main_Model extends Model
         $return = array();
 
         $query = $this->db->table('user')
+            ->where('id', $id)->update($data);
+
+        if ($query == true) {
+            $return['error'] = 0;
+            $return['id'] = $id;
+        } else {
+            $return['error'] = 1;
+            $return['id'] = $id;
+        }
+
+        return $return;
+    }
+
+    public function getUserData($id)
+    {
+        $query = $this->db->table('user')
+            ->where('id', $id);
+
+        return $query->get()->getResult();
+    }
+
+    public function deleteUser($id)
+    {
+        $query = $this->db->table('user')
+            ->where('id', $id)
+            ->delete();
+
+        return $query->resultID;
+    }
+
+    public function createProducts($data)
+    {
+        $return = array();
+
+        $query = $this->db->table('product')
+            ->insert($data);
+
+        if ($query->resultID == true) {
+            $return['error'] = 0;
+            $return['id'] = $query->connID->insert_id;
+        } else
+            $return['error'] = 1;
+
+        return $return;
+    }
+
+    public function checkProductExist($name, $id = '')
+    {
+        $query = $this->db->table('product')
+            ->where('name', $name);
+
+        if (!empty($id)) {
+            $IDs = array();
+            $IDs[0] = $id;
+            $query->whereNotIn('id', $IDs);
+        }
+
+        return $query->get()->getResult();
+    }
+
+    public function getProductsProcessingData($params)
+    {
+        $query = $this->db->table('product');
+
+        if (!empty($params['search'])) {
+            $query->like('name', $params['search']);
+            $query->orLike('cost', $params['search']);
+        }
+
+        $query->offset($params['start']);
+        $query->limit($params['length']);
+        $query->orderBy($this->getProductsProcessingSort($params['sortColumn'], $params['sortDir']));
+
+        return $query->get()->getResult();
+    }
+
+    public function getProductsProcessingSort($column, $dir)
+    {
+        $sort = '';
+
+        if ($column == 0) {
+            if ($dir == 'asc')
+                $sort = 'name ASC';
+            else
+                $sort = 'name DESC';
+        }
+
+        if ($column == 1) {
+            if ($dir == 'asc')
+                $sort = 'cost ASC';
+            else
+                $sort = 'cost DESC';
+        }
+
+        return $sort;
+    }
+
+    public function getTotalProducts()
+    {
+        $query = $this->db->table('product')
+            ->selectCount('id')
+            ->get()->getResult();
+
+        return $query[0]->id;
+    }
+
+    public function getProducts()
+    {
+        $query = $this->db->table('product')
+            ->select('*');
+
+        return $query->get()->getResult();
+    }
+
+    public function getProductData($id)
+    {
+        $query = $this->db->table('product')
+        ->where('id', $id);
+
+        return $query->get()->getResult();
+    }
+
+    public function updateProduct($data, $id)
+    {
+        $return = array();
+
+        $query = $this->db->table('product')
         ->where('id', $id)->update($data); 
 
         if($query == true)
@@ -145,135 +264,58 @@ class Main_Model extends Model
         return $return;
     }
 
-    public function getUserData($id)
-    {
-        $query = $this->db->table('user')
-        ->where('id', $id);
-
-        return $query->get()->getResult();
-    }
-
-    public function createProducts($data)
-    {
-        $return = array();
-
-        $query = $this->db->table('product')
-        ->insert($data);
-
-        if($query->resultID == true)
-        {
-            $return['error'] = 0;
-            $return['id'] = $query->connID->insert_id;
-        }
-        else
-            $return['error'] = 1;
-        
-        return $return;
-    }
-
-    public function checkProductExist($name)
+    public function deleteProduct($id)
     {
         $query = $this->db->table('product')
-        ->where('name', $name);
+        ->where('id', $id)
+        ->delete(); 
 
-        return $query->get()->getResult();
-    }
-
-    public function getProductsProcessingData($params)
-    {
-        $query = $this->db->table('product');
-
-        if(!empty($params['search']))
-        {
-            $query->like('name', $params['search']);
-            $query->orLike('cost', $params['search']);
-        }
-
-        $query->offset($params['start']);
-        $query->limit($params['length']);
-        $query->orderBy($this->getProductsProcessingSort($params['sortColumn'], $params['sortDir']));
-
-        return $query->get()->getResult();
-    }
-
-    public function getProductsProcessingSort($column, $dir)
-    {
-        $sort = '';
-
-        if($column == 0)
-        {
-            if($dir == 'asc')
-                $sort = 'name ASC'; 
-            else
-                $sort = 'name DESC'; 
-        }
-
-        if($column == 1)
-        {
-            if($dir == 'asc')
-                $sort = 'cost ASC'; 
-            else
-                $sort = 'cost DESC'; 
-        }
-
-        return $sort;
-    }
-
-    public function getTotalProducts()
-    {
-        $query = $this->db->table('product')
-        ->selectCount('id')
-        ->get()->getResult(); 
-
-        return $query[0]->id;
-    }
-
-    public function getProducts()
-    {
-        $query = $this->db->table('product')
-        ->select('*');
-
-        return $query->get()->getResult();
+        return $query->resultID;
     }
 
     public function createBasket($data)
     {
         $query = $this->db->table('basket')
-        ->insert($data);
+            ->insert($data);
 
-        if($query->resultID == true)
-        {
+        if ($query->resultID == true) {
             $return['error'] = 0;
             $return['id'] = $query->connID->insert_id;
-        }
-        else
+        } else
             $return['error'] = 1;
-        
+
         return $return;
     }
 
     public function createBasketProduct($data)
     {
         $query = $this->db->table('basket_product')
-        ->insert($data);
+            ->insert($data);
 
-        if($query->resultID == true)
-        {
+        if ($query->resultID == true) {
             $return['error'] = 0;
             $return['id'] = $query->connID->insert_id;
-        }
-        else
+        } else
             $return['error'] = 1;
-        
+
         return $return;
     }
 
     public function getBasketView($basketID)
     {
         $query = $this->db->table('basket_view')
-        ->where('basket_id', $basketID);
+            ->where('basket_id', $basketID);
 
         return $query->get()->getResult();
     }
 
+    public function deleteBasketProduct($basket_id, $product_id)
+    {
+        $query = $this->db->table('basket_product')
+            ->where('basket_id', $basket_id)
+            ->where('product_id', $product_id)
+            ->delete();
+
+        return $query->resultID;
+    }
 }

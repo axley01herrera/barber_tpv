@@ -16,7 +16,7 @@
                     </div>
                     <div class="col-12 ">
                         <label for="txt-lastName">Apellido</label>
-                        <input id="txt-lastName" type="text" class="form-control modal-required focus" value="<?php echo @$user_data[0]->last_name; ?>" />
+                        <input id="txt-lastName" type="text" class="form-control modal-required focus" value="<?php echo @$user_data[0]->lastName; ?>" />
                         <p id="msg-txt-lastName" class="text-danger text-end"></p>
                     </div>
                     <div class="col-12 ">
@@ -60,9 +60,9 @@
 
         if (resultCheckRequiredValues == 0 && resultCheckEmailFormat == 0) {
 
-            if(action == 'create')
+            if (action == 'create')
                 ajaxCreate();
-            else if(action == 'update')
+            else if (action == 'update')
                 ajxUpdate();
 
         }
@@ -83,7 +83,6 @@
             dataType: "json",
 
         }).done(function(jsonResponse) {
-            console.log(jsonResponse)
 
             if (jsonResponse.error == 0) // SUCCESS
             {
@@ -173,10 +172,8 @@
                 'userID': '<?php echo @$user_data[0]->id; ?>',
             },
             dataType: "json",
-            
-        }).done(function(jsonResponse) {
 
-            console.log(jsonResponse)
+        }).done(function(jsonResponse) {
 
             if (jsonResponse.error == 0) // SUCCESS
             {

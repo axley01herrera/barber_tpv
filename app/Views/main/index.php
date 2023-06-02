@@ -34,7 +34,7 @@
 
     <body>
         <div id="main-modal"></div>
-        <div class="container">
+        <div class="container-fluid">
             <?php echo view($page);?>
         </div>
     </body>

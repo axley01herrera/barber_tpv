@@ -1,3 +1,4 @@
+
 <div class="row">
     <?php
     for ($i = 0; $i < $count_products; $i++) {
@@ -7,7 +8,7 @@
             <div class="card cardStyle">
                 <!-- <img class="card-img-top img-fluid" src="assets/images/small/img-1.jpg" alt="Card image cap"> -->
                 <div class="card-body">
-                    <h1 class="text-center mb-5"><?php echo $products[$i]->name; ?></h1>
+                    <h5 class="text-center mb-1"><?php echo $products[$i]->name; ?></h5>
                     <div class="text-center">
                         <p class="card-text text-center">
                         <h3 class="text-center"><?php echo '€ ' . number_format((float) $products[$i]->cost, 2, ".", ','); ?></h3>
