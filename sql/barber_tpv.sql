@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 29-05-2023 a las 19:36:33
+-- Tiempo de generación: 02-06-2023 a las 21:18:42
 -- Versión del servidor: 5.7.36
 -- Versión de PHP: 7.4.26
 
@@ -20,6 +20,50 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `barber_tpv`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `basket`
+--
+
+DROP TABLE IF EXISTS `basket`;
+CREATE TABLE IF NOT EXISTS `basket` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `status` int(1) NOT NULL DEFAULT '1',
+  `date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `basket_product`
+--
+
+DROP TABLE IF EXISTS `basket_product`;
+CREATE TABLE IF NOT EXISTS `basket_product` (
+  `basket_id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura Stand-in para la vista `basket_view`
+-- (Véase abajo para la vista actual)
+--
+DROP VIEW IF EXISTS `basket_view`;
+CREATE TABLE IF NOT EXISTS `basket_view` (
+`basket_id` int(11)
+,`product_id` int(11)
+,`id` int(11)
+,`product_name` varchar(200)
+,`product_cost` float
+);
 
 -- --------------------------------------------------------
 
@@ -68,19 +112,20 @@ CREATE TABLE IF NOT EXISTS `user` (
   `status` int(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+-- --------------------------------------------------------
 
 --
--- Volcado de datos para la tabla `user`
+-- Estructura para la vista `basket_view`
 --
+DROP TABLE IF EXISTS `basket_view`;
 
-INSERT INTO `user` (`id`, `email`, `clave`, `name`, `lastName`, `role`, `status`) VALUES
-(1, 'axley01herrera@gmail.com', '202cb962ac59075b964b07152d234b70', 'Axley', 'Herrera', 1, 1),
-(2, 'test@email.com', '123', 'Miguel', 'Alfonso', 1, 1),
-(3, 'carlos@email.com', NULL, 'Carlos', 'Osbaldo', 2, 1),
-(4, 'ariel@email.com', '202cb962ac59075b964b07152d234b70', 'Ariel', 'Duque', 2, 1);
+DROP VIEW IF EXISTS `basket_view`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `basket_view`  AS SELECT `basket_product`.`basket_id` AS `basket_id`, `basket_product`.`product_id` AS `product_id`, `basket_product`.`id` AS `id`, `product`.`name` AS `product_name`, `product`.`cost` AS `product_cost` FROM (`basket_product` join `product` on((`basket_product`.`product_id` = `product`.`id`))) ;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
