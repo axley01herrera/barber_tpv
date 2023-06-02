@@ -458,11 +458,14 @@ class Main extends BaseController
 
             $btn_editProduct = '<a class="btn-editProduct" data-id="' . $result[$i]->id . '" href="#"><span class="mdi mdi-pencil" title="Actualizar Producto"></span></a>';
 
+            $btn_deleteProduct = '<a class="btn-delete-product" data-id="' . $result[$i]->id . '" href="#"><span class="mdi mdi-delete" title="Eliminar Producto"></span></a>';
+
 
             $col = array();
             $col['name'] = $result[$i]->name;
             $col['cost'] = '€ '.number_format((float) $result[$i]->cost, 2,".",',');
-            $col['actions'] = $btn_editProduct;
+            $col['actionedit'] = $btn_editProduct;
+            $col['actiondelete'] = $btn_deleteProduct;
 
             $row[$i] =  $col;
         }
@@ -605,6 +608,37 @@ class Main extends BaseController
 
         return json_encode($response);
     }
+
+    public function deleteProduct()
+    {
+        # VERIFY SESSION
+        if(empty($this->session->get('id')))
+        {
+            $response['error'] = 2;
+            $response['msg'] = 'Sessión Expirada';
+
+            return json_encode($response);
+        }
+
+        $id = $this->request->getPost('userID');
+
+        $objModel = new Main_Model;
+        $result = $objModel->deleteProduct($id);
+
+        if($result == true)
+        {
+            $response['error'] = 0;
+            $response['msg'] = 'Producto Eliminado';
+        }
+        else
+        {
+            $response['error'] = 1;
+            $response['msg'] = 'Ha ocurrido un error en el proceso';
+        }
+
+            return json_encode($response);
+
+        }
 
     # TPV
 

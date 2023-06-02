@@ -18,6 +18,7 @@
                         <th>Nombre</th>
                         <th>Precio</th>
                         <th></th>
+                        <th></th>
                     </tr>
                 </thead>
             </table>
@@ -94,7 +95,10 @@
                 data: 'cost'
             },
             {
-                data: 'actions'
+                data: 'actionedit'
+            },
+            {
+                data: 'actiondelete'
             },
         ],
     });
@@ -121,5 +125,95 @@
 
     });
     });
+
+    dataTable.on('click', '.btn-delete-product', function (event) { // SET OR UPDATE CLAVE
+
+    event.preventDefault();
+
+    $.ajax({
+
+    type: "post",
+    url: "<?php echo base_url('Main/deleteProduct');?>",
+    data: {
+        'userID': $(this).attr('data-id'),
+        'action': 'delete',
+    },
+    dataType: "json",
+    
+    }).done(function(jsonResponse){
+    console.log(jsonResponse)
+
+    if (jsonResponse.error == 0) // SUCCESS
+    {
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        });
+
+        Toast.fire({
+            icon: 'success',
+            title: jsonResponse.msg
+        });
+
+        dataTable.draw();
+
+        closeModal();
+
+    } else // ERROR
+    {
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        });
+
+        Toast.fire({
+            icon: 'error',
+            title: jsonResponse.msg
+        });
+
+    }
+
+    if (jsonResponse.error == 2) // SESSION EXPIRED
+        window.location.href = "<?php echo base_url('Authentication'); ?>";
+
+
+    if (jsonResponse.error == 3)
+        $("#txt-email").addClass('is-invalid');
+
+    }).fail(function(error) {
+
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+        });
+
+        Toast.fire({
+            icon: 'error',
+            title: 'Ha ocurrido un error'
+        });
+
+    });
+});
 
 </script>

@@ -265,6 +265,16 @@ class Main_Model extends Model
         return $sort;
     }
 
+    public function deleteProduct($id)
+    {
+
+        $query = $this->db->table('product')
+        ->where('id', $id)
+        ->delete(); 
+
+        return $query;
+    }
+
     public function getTotalProducts()
     {
         $query = $this->db->table('product')
