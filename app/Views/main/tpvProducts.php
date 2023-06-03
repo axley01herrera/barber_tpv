@@ -1,57 +1,46 @@
-<div class="card">
-    <div class="card-body">
-        <h5 class="text-center mb-2"><i class="mdi mdi-clipboard-edit-outline"></i> Ticket</h5>
-        <div class="scrollable-div-basket">
-            <?php
-            $total = 0;
-            for ($i = 0; $i < $count_basket; $i++) {
+<div class="row">
+    <?php
+    for ($i = 0; $i < $count_products; $i++) {
+    ?>
 
-                $total = $total + (int) $basket[$i]->product_cost;
-            ?>
-                <div class="alert alert-secondary alert-top-border alert-dismissible fade show" role="alert">
-                    <div class="row">
-                        <div class="col-4"><span><?php echo $basket[$i]->product_name; ?></span></div>
-                        <div class="col-4"><span><?php echo '€ ' . number_format((float) $basket[$i]->product_cost, 2, ".", ','); ?></span></div>
-                        <div class="col-4 text-end">
-                            <button class="btn btn-sm btn-soft-danger delete-item-basket" data-product-id="<?php echo $basket[$i]->product_id; ?>" data-basket-id="<?php echo $basket[$i]->basket_id; ?>">
-                                <i class="mdi mdi-trash-can-outline"></i>
-                            </button>
-                        </div>
+        <div class="col-12 col-lg-4 product-item" data-product-id="<?php echo $products[$i]->id; ?>">
+            <div class="card cardStyle">
+                <!-- <img class="card-img-top img-fluid" src="assets/images/small/img-1.jpg" alt="Card image cap"> -->
+                <div class="card-body">
+                    <h5 class="text-center mb-1"><?php echo $products[$i]->name; ?></h5>
+                    <div class="text-center">
+                        <p class="card-text text-center">
+                        <h3 class="text-center"><?php echo '€ ' . number_format((float) $products[$i]->cost, 2, ".", ','); ?></h3>
+                        </p>
                     </div>
                 </div>
-            <?php
-            }
-            ?>
+            </div>
         </div>
-    </div>
-</div>
-<div class="row">
-    <div class="col-12 text-end">
-        <h4 id="basket-total" class="m-0 fw-semibold">Total: <?php echo '€ ' . number_format((float) $total, 2, ".", ','); ?></h4>
-    </div>
-    <div class="col-12 text-end">
-        <button class="btn btn-sm btn-success">Cobrar</button>
-    </div>
+
+    <?php
+    }
+    ?>
 </div>
 
 <script>
-    $('.delete-item-basket').on('click', function() {
+    $('.product-item').on('click', function() {
 
         $.ajax({
 
             type: "post",
-            url: "<?php echo base_url('Main/deleteBasketProduct'); ?>",
+            url: "<?php echo base_url('Main/createBasketProduct'); ?>",
             data: {
-                'basket_id': $(this).attr('data-basket-id'),
-                'product_id': $(this).attr('data-product-id')
+                'basketID': basketID,
+                'productID': $(this).attr('data-product-id')
             },
             dataType: "json",
 
         }).done(function(jsonResponse) {
 
-            if (jsonResponse.error == 0) { // SUCCESS
+            if (jsonResponse.error == 0) {
 
                 loadBasket();
+
                 const Toast = Swal.mixin({
                     toast: true,
                     position: 'top-end',
@@ -68,7 +57,9 @@
                     icon: 'success',
                     title: jsonResponse.msg
                 });
-            } else if (sonResponse.error == 1) { // ERROR
+
+            } else {
+
                 const Toast = Swal.mixin({
                     toast: true,
                     position: 'top-end',

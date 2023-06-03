@@ -28,141 +28,119 @@
     <script src="<?php echo base_url('assets/libs/sweetalert/sweetalert2.js'); ?>"></script>
 
 </head>
-    <body>
-        <div class="authentication-bg min-vh-100">
-            <div class="bg-overlay bg-white"></div>
-            <div class="container">
-                <div class="d-flex flex-column min-vh-100 px-3 pt-4">
-                    <div class="row justify-content-center my-auto">
-                        <div class="col-md-8 col-lg-6 col-xl-4">
-                            <div class="text-center  py-5">
-                                <div class="mb-4">
-                                    <h5>Bienvenido!</h5>
-                                    <p>Inicia sessión para continuar.</p>
+
+<body>
+    <div class="authentication-bg min-vh-100">
+        <div class="bg-overlay bg-white"></div>
+        <div class="container">
+            <div class="d-flex flex-column min-vh-100 px-3 pt-4">
+                <div class="row justify-content-center my-auto">
+                    <div class="col-md-8 col-lg-6 col-xl-4">
+                        <div class="text-center  py-5">
+                            <div class="mb-4">
+                                <h1>Bienvenido</h1>
+                                <h5>Inicia sessión para continuar</h5>
+                            </div>
+                            <div>
+                                <div class="form-floating form-floating-custom mb-3">
+                                    <input type="text" class="form-control required focus email" id="txt-email" placeholder="Email">
+                                    <label for="txt-email">Email</label>
+                                    <div class="form-floating-icon">
+                                        <i class="uil uil-envelope-alt"></i>
+                                    </div>
                                 </div>
-                                <div>
-                                    <div class="form-floating form-floating-custom mb-3">
-                                        <input type="text" class="form-control required focus email" id="txt-email" placeholder="Email">
-                                        <label for="txt-email">Email</label>
-                                        <div class="form-floating-icon">
-                                            <i class="uil uil-envelope-alt"></i>
-                                        </div>
+                                <div class="form-floating form-floating-custom mb-3">
+                                    <input type="password" class="form-control required focus" id="txt-clave" placeholder="Clave">
+                                    <label for="txt-clave">Clave</label>
+                                    <div class="form-floating-icon">
+                                        <i class="uil uil-padlock"></i>
                                     </div>
-                                    <div class="form-floating form-floating-custom mb-3">
-                                        <input type="password" class="form-control required focus" id="txt-clave" placeholder="Clave">
-                                        <label for="txt-clave">Clave</label>
-                                        <div class="form-floating-icon">
-                                            <i class="uil uil-padlock"></i>
-                                        </div>
-                                    </div>
-                                    <div class="mt-3">
-                                        <button id="btn-login" type="button" class="btn btn-info w-100">Entrar</button>
-                                    </div>
+                                </div>
+                                <div class="mt-3">
+                                    <button id="btn-login" type="button" class="btn btn-info w-100">Entrar</button>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-xl-12">
-                            <div class="text-center text-muted p-4">
-                                <p class="mb-0">&copy; <script>document.write(new Date().getFullYear())</script> Creado por Axley Herrera Vázquez</p>
-                            </div>
+                </div>
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="text-center text-muted p-4">
+                            <h5 class="mb-0">&copy; <script>
+                                    document.write(new Date().getFullYear())
+                                </script> Creado por Axley Herrera Vázquez</h5>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <?php echo view('global/form_validation');?>
+    </div>
+    <?php echo view('global/form_validation'); ?>
 
-        <script>
+    <script>
+        $('#btn-login').on('click', function() {
 
-            $('#btn-login').on('click', function () {
+            let resultCheckRequiredValues = checkRequiredValues('required');
 
-                let resultCheckRequiredValues = checkRequiredValues('required');
+            if (resultCheckRequiredValues == 0) {
+                let resultCheckEmailFormat = checkEmailFormat('email');
 
-                if(resultCheckRequiredValues == 0)
-                {
-                    let resultCheckEmailFormat = checkEmailFormat('email');
+                if (resultCheckEmailFormat == 0) {
+                    $.ajax({
 
-                    if(resultCheckEmailFormat == 0)
-                    {
-                        $.ajax({
-    
-                            type: "post",
-                            url: "<?php echo base_url('Authentication/login');?>",
-                            data: {
-                                'email': $('#txt-email').val(),
-                                'clave': $('#txt-clave').val()
-                            },
-                            dataType: "json",
-                            
-                        }).done(function(jsonResponse) { console.log(jsonResponse)
+                        type: "post",
+                        url: "<?php echo base_url('Authentication/login'); ?>",
+                        data: {
+                            'email': $('#txt-email').val(),
+                            'clave': $('#txt-clave').val()
+                        },
+                        dataType: "json",
 
-                            if(jsonResponse.error == 0)
-                            {
-                                const Toast = Swal.mixin({
-                                    toast: true,
-                                    position: 'top-end',
-                                    showConfirmButton: false,
-                                    timer: 3000,
-                                    timerProgressBar: true,
-                                    didOpen: (toast) => {
-                                        toast.addEventListener('mouseenter', Swal.stopTimer)
-                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
-                                    }
-                                })
-    
-                                Toast.fire({
-                                    icon: 'success',
-                                    title: jsonResponse.msg
-                                });
+                    }).done(function(jsonResponse) {
 
-                                window.location.href = "<?php echo base_url('Main');?>";
-                                
-                            }
-                            else
-                            {
-                                const Toast = Swal.mixin({
-                                    toast: true,
-                                    position: 'top-end',
-                                    showConfirmButton: false,
-                                    timer: 3000,
-                                    timerProgressBar: true,
-                                    didOpen: (toast) => {
-                                        toast.addEventListener('mouseenter', Swal.stopTimer)
-                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
-                                    }
-                                })
-    
-                                Toast.fire({
-                                    icon: 'error',
-                                    title: jsonResponse.msg
-                                });
-                            }
-    
-                        }).fail(function(error) {
-    
+                        if (jsonResponse.error == 0) {
                             const Toast = Swal.mixin({
                                 toast: true,
                                 position: 'top-end',
                                 showConfirmButton: false,
-                                timer: 3000,
+                                timer: 1000,
                                 timerProgressBar: true,
                                 didOpen: (toast) => {
                                     toast.addEventListener('mouseenter', Swal.stopTimer)
                                     toast.addEventListener('mouseleave', Swal.resumeTimer)
                                 }
                             })
-    
+
+                            Toast.fire({
+                                icon: 'success',
+                                title: jsonResponse.msg
+                            });
+
+                            setTimeout(() => {
+                                 window.location.href = "<?php echo base_url('Main'); ?>";
+                            }, "2000");
+
+                        } else {
+                            const Toast = Swal.mixin({
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 1000,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                }
+                            })
+
                             Toast.fire({
                                 icon: 'error',
-                                title: 'Ha ocurrido un error'
+                                title: jsonResponse.msg
                             });
-    
-                        })
-                    }
-                    else
-                    {
+                        }
+
+                    }).fail(function(error) {
+
                         const Toast = Swal.mixin({
                             toast: true,
                             position: 'top-end',
@@ -177,13 +155,11 @@
 
                         Toast.fire({
                             icon: 'error',
-                            title: 'El formato del email no es correcto'
+                            title: 'Ha ocurrido un error'
                         });
 
-                    }
-                }
-                else
-                {
+                    })
+                } else {
                     const Toast = Swal.mixin({
                         toast: true,
                         position: 'top-end',
@@ -198,14 +174,30 @@
 
                     Toast.fire({
                         icon: 'error',
-                        title: 'Email y Clave son requeridos'
+                        title: 'El formato del email no es correcto'
                     });
+
                 }
-            });
+            } else {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                })
 
-        </script>
-    </body>
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Email y Clave son requeridos'
+                });
+            }
+        });
+    </script>
+</body>
+
 </html>
-
-
-

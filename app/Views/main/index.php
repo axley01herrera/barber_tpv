@@ -20,6 +20,16 @@
         <link href="<?php echo base_url('assets/libs/sweetalert/sweetalert2.css'); ?>" id="app-style" rel="stylesheet" type="text/css" />
         <link href="<?php echo base_url('assets/css/datatable/dataTables.bootstrap5.min.css');?>" rel="stylesheet" type="text/css" />
 
+        <style>
+            .card-link {
+                transition: transform 0.3s;
+            }
+            .card-link:hover {
+                transform: scale(1.03);
+                border: 2px solid rgba(3, 142, 220, 1);
+            }
+        </style>
+
         <!-- JAVASCRIPT -->
         <script src="<?php echo base_url('assets/libs/bootstrap/js/bootstrap.bundle.min.js'); ?>"></script>
         <script src="<?php echo base_url('assets/libs/metismenujs/metismenujs.min.js'); ?>"></script>

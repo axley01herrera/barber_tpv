@@ -289,7 +289,7 @@ class Main_Model extends Model
 
     public function createBasketProduct($data)
     {
-        $query = $this->db->table('basket_product')
+        $query = $this->db->table('basketproduct')
             ->insert($data);
 
         if ($query->resultID == true) {
@@ -304,18 +304,125 @@ class Main_Model extends Model
     public function getBasketView($basketID)
     {
         $query = $this->db->table('basket_view')
-            ->where('basket_id', $basketID);
+            ->where('basketID', $basketID);
 
         return $query->get()->getResult();
     }
 
-    public function deleteBasketProduct($basket_id, $product_id)
+    public function deleteBasketProduct($id)
     {
-        $query = $this->db->table('basket_product')
-            ->where('basket_id', $basket_id)
-            ->where('product_id', $product_id)
+        $query = $this->db->table('basketproduct')
+            ->where('id', $id)
             ->delete();
 
         return $query->resultID;
+    }
+
+    public function updateBasket($data, $id)
+    {
+        $return = array();
+
+        $query = $this->db->table('basket')
+        ->where('id', $id)
+        ->update($data);
+
+        if($query == true)
+        {
+            $return['error'] = 0;
+            $return['id'] = $id;
+        }
+        else
+        {
+            $return['error'] = 1;
+            $return['id'] = $id;
+        }
+
+        return $return;
+    }
+
+    public function getBasketDTProcessingData($params)
+    {
+        $query = $this->db->table('basket_dt');
+
+        if (!empty($params['search'])) {
+            $query->like('formattedDate', $params['search']);
+            $query->orLike('basketID', $params['search']);
+            $query->orLike('userName', $params['search']);
+            $query->orLike('userLastName', $params['search']);
+            $query->orLike('paymentMethod', $params['search']);
+            $query->orLike('total', $params['search']);
+        }
+
+        $query->offset($params['start']);
+        $query->limit($params['length']);
+        $query->orderBy($this->getBasketDTProcessingSort($params['sortColumn'], $params['sortDir']));
+
+
+        return $query->get()->getResult();
+    }
+
+    public function getBasketDTProcessingSort($column, $dir)
+    {
+        $sort = '';
+
+        if ($column == 0) {
+            if ($dir == 'asc')
+                $sort = 'formattedDate ASC';
+            else
+                $sort = 'formattedDate DESC';
+        }
+
+        if ($column == 1) {
+            if ($dir == 'asc')
+                $sort = 'basketID ASC';
+            else
+                $sort = 'basketID DESC';
+        }
+
+        if ($column == 2) {
+            if ($dir == 'asc')
+                $sort = 'userName ASC';
+            else
+                $sort = 'userName DESC';
+        }
+
+        if ($column == 3) {
+            if ($dir == 'asc')
+                $sort = 'userLastName ASC';
+            else
+                $sort = 'userLastName DESC';
+        }
+
+        if ($column == 4) {
+            if ($dir == 'asc')
+                $sort = 'paymentMethod ASC';
+            else
+                $sort = 'paymentMethod DESC';
+        }
+
+        if ($column == 4) {
+            if ($dir == 'asc')
+                $sort = 'paymentMethod ASC';
+            else
+                $sort = 'paymentMethod DESC';
+        }
+
+        if ($column == 5) {
+            if ($dir == 'asc')
+                $sort = 'total ASC';
+            else
+                $sort = 'total DESC';
+        }
+
+        return $sort;
+    }
+
+    public function getTotalBasketDT()
+    {
+        $query = $this->db->table('basket_dt')
+            ->selectCount('basketID')
+            ->get()->getResult();
+
+        return $query[0]->basketID;
     }
 }

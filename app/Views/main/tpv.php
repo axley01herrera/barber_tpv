@@ -18,7 +18,7 @@
     }
 </style>
 
-<div class="container">
+<div id="main-content" data-value="tpv" class="container">
     <div class="row mt-5">
         <div class="col-12 ">
             <h1 class="text-primary">
@@ -26,7 +26,7 @@
             </h1>
         </div>
         <div class="col-12">
-            <?php echo view('main/component/btn_control_panel'); ?>
+            <?php echo view('main/component/btnControlPanel'); ?>
         </div>
     </div>
     
@@ -39,8 +39,7 @@
 </div>
 
 <script>
-    var basket_id = <?php echo $basket_id; ?>;
-    console.log(basket_id);
+    var basketID = <?php echo $basketID; ?>;
 
     loadBasket();
     loadProducts();
@@ -52,7 +51,7 @@
             type: "post",
             url: "<?php echo base_url('Main/returnBasket'); ?>",
             data: {
-                'basket_id': basket_id
+                'basketID': basketID
             },
             dataType: "html",
 

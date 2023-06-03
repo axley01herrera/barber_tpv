@@ -6,7 +6,7 @@
             </h1>
         </div>
         <div class="col-12">
-            <?php echo view('main/component/btn_control_panel'); ?>
+            <?php echo view('main/component/btnControlPanel'); ?>
             <button id="btn-create" class="btn btn-sm btn-success">Crear Empleado</button>
         </div>
     </div>

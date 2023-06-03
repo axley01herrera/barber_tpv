@@ -115,7 +115,7 @@ class Main extends BaseController
             $btn_delete = '<button class="ms-1 me-1 btn btn-sm btn-danger btn-delete-employee" data-id="' . $result[$i]->id . '"><span class="mdi mdi-trash-can-outline" title="Eliminar Empleado"></span></button>';
 
             $col = array();
-            $col['name'] = $result[$i]->name;
+            $col['name'] = '<a href="' . base_url('Main/employee') . '/' . $result[$i]->id . '">' . $result[$i]->name . '</a>';
             $col['lastName'] = $result[$i]->lastName;
             $col['email'] = $result[$i]->email;
             $col['role'] = $role;
@@ -136,6 +136,39 @@ class Main extends BaseController
         $data['data'] = $row;
 
         return json_encode($data);
+    }
+
+    public function employee()
+    {
+        # VERIFY SESSION
+        if (empty($this->session->get('id'))) {
+
+            $data = array();
+            $data['page'] = 'main/logout';
+            $data['msg'] = 'Sessión Expirada';
+
+            return view('main/index', $data);
+        }
+
+        $userLoggedID = (int) $this->session->get('id');
+        $userID = (int) $this->request->uri->getSegment(3);
+
+        if ($userLoggedID != $userID) {
+            $data = array();
+            $data['page'] = 'main/logout';
+            $data['msg'] = 'Sessión Expirada';
+
+            return view('main/index', $data);
+        }
+
+        $objModel = new Main_Model;
+        $employee = $objModel->getUserData($userID);
+
+        $data = array();
+        $data['employee'] = $employee;
+        $data['page'] = 'main/employeeDetail';
+
+        return view('main/index', $data);
     }
 
     public function changeUserStatus()
@@ -572,14 +605,14 @@ class Main extends BaseController
         }
 
         $data_basket = array();
-        $data_basket['user_id'] = $this->session->get('id');
+        $data_basket['userID'] = $this->session->get('id');
 
         $objModel = new Main_Model;
         $result_create_basket = $objModel->createBasket($data_basket);
 
         if ($result_create_basket['error'] == 0) {
             $data = array();
-            $data['basket_id'] = $result_create_basket['id'];
+            $data['basketID'] = $result_create_basket['id'];
             $data['page'] = 'main/tpv';
         }
 
@@ -589,12 +622,12 @@ class Main extends BaseController
     public function returnBasket()
     {
         $objModel = new Main_Model;
-        $basket_id = $this->request->getPost('basket_id');
+        $basketID = $this->request->getPost('basketID');
 
-        $data['basket'] = $objModel->getBasketView($basket_id);
-        $data['count_basket'] = sizeof($data['basket']);
+        $data['basketView'] = $objModel->getBasketView($basketID);
+        $data['countBasketView'] = sizeof($data['basketView']);
 
-        return view('main/tpv_basket', $data);
+        return view('main/tpvBasket', $data);
     }
 
     public function returnProducts()
@@ -605,7 +638,7 @@ class Main extends BaseController
         $data['products'] = $objModel->getProducts();
         $data['count_products'] = sizeof($data['products']);
 
-        return view('main/tpv_products', $data);
+        return view('main/tpvProducts', $data);
     }
 
     public function createBasketProduct()
@@ -613,12 +646,12 @@ class Main extends BaseController
         $objModel = new Main_Model;
 
         $data = array();
-        $data['basket_id'] = $this->request->getPost('basket_id');
-        $data['product_id'] = $this->request->getPost('product_id');
+        $data['basketID'] = $this->request->getPost('basketID');
+        $data['productID'] = $this->request->getPost('productID');
 
-        $result_create_basket_product = $objModel->createBasketProduct($data);
+        $result_create_barberTPV = $objModel->createBasketProduct($data);
 
-        if ($result_create_basket_product['error'] == 0) {
+        if ($result_create_barberTPV['error'] == 0) {
             $response['error'] = 0;
             $response['msg'] = 'Producto Añadido a la Lista';
         } else {
@@ -633,11 +666,8 @@ class Main extends BaseController
     {
         $response = array();
 
-        $basket_id = $this->request->getPost('basket_id');
-        $product_id = $this->request->getPost('product_id');
-
         $objModel = new Main_Model;
-        $result = $objModel->deleteBasketProduct($basket_id, $product_id);
+        $result = $objModel->deleteBasketProduct($this->request->getPost('id'));
 
         if ($result == true) {
             $response['error'] = 0;
@@ -648,5 +678,93 @@ class Main extends BaseController
         }
 
         return json_encode($response);
+    }
+
+    public function showModalSelectPayMethod()
+    {
+        # VERIFY SESSION
+        if (empty($this->session->get('id'))) {
+            $data = array();
+            $data['page'] = 'main/logout';
+            $data['msg'] = 'Sessión Expirada';
+
+            return view('main/index', $data);
+        }
+
+        $data = array();
+        $data['basketID'] = $this->request->getPost('basketID');
+        $data['total'] = $this->request->getPost('total');
+        $data['title'] = 'Seleccione un método de pago';
+        $data['action'] = $this->request->getPost('action');
+        $data['userID'] = $this->session->get('id');
+
+        return view('modals/selectPaymentMethod', $data);
+    }
+
+    public function updateBasket()
+    {
+        $basketID = $this->request->getPost('basketID');
+
+        $data = array();
+        $data['total'] = $this->request->getPost('total');
+        $data['status'] = 2;
+        $data['payType'] = $this->request->getPost('payType');
+
+        $objModel = new Main_Model;
+        $resultUpdateBasket = $objModel->updateBasket($data, $basketID);
+
+        if ($resultUpdateBasket['error'] == 0) {
+            $response['error'] = 0;
+            $response['msg'] = 'Ticket Creado';
+        } else {
+            $response['error'] = 1;
+            $response['msg'] = 'Ha ocurrido un error en el proceso';
+        }
+
+        return json_encode($response);
+    }
+
+    public function processingBasketDT()
+    {
+        $dataTableRequest = $_REQUEST;
+
+        $params = array();
+        $params['draw'] = $dataTableRequest['draw'];
+        $params['start'] = $dataTableRequest['start'];
+        $params['length'] = $dataTableRequest['length'];
+        $params['search'] = $dataTableRequest['search']['value'];
+        $params['sortColumn'] = $dataTableRequest['order'][0]['column'];
+        $params['sortDir'] = $dataTableRequest['order'][0]['dir'];
+
+        $row = array();
+        $totalRecords = 0;
+
+        $objModel = new Main_Model;
+        $result = $objModel->getBasketDTProcessingData($params);
+        $totalRows = sizeof($result);
+
+        for ($i = 0; $i < $totalRows; $i++) {
+
+            $col = array();
+            $col['date'] = $result[$i]->formattedDate;
+            $col['ticketID'] = $result[$i]->basketID;
+            $col['userName'] = $result[$i]->userName;
+            $col['userlastName'] = $result[$i]->userLastName;
+            $col['paymentType'] = $result[$i]->paymentMethod;
+            $col['Total'] = $result[$i]->total;
+     
+            $row[$i] =  $col;
+        }
+
+        if ($totalRows > 0)
+            $totalRecords = $objModel->getTotalBasketDT();
+
+        $data = array();
+        $data['draw'] = $dataTableRequest['draw'];
+        $data['recordsTotal'] = intval($totalRecords);
+        $data['recordsFiltered'] = intval($totalRecords);
+        $data['data'] = $row;
+
+        return json_encode($data);
     }
 }

@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de datos: `barber_tpv`
+-- Base de datos: `barberTPV`
 --
 
 -- --------------------------------------------------------
@@ -30,7 +30,7 @@ SET time_zone = "+00:00";
 DROP TABLE IF EXISTS `basket`;
 CREATE TABLE IF NOT EXISTS `basket` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) NOT NULL,
+  `userID` int(11) NOT NULL,
   `status` int(1) NOT NULL DEFAULT '1',
   `date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
@@ -39,13 +39,13 @@ CREATE TABLE IF NOT EXISTS `basket` (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `basket_product`
+-- Estructura de tabla para la tabla `barberTPV`
 --
 
-DROP TABLE IF EXISTS `basket_product`;
-CREATE TABLE IF NOT EXISTS `basket_product` (
-  `basket_id` int(11) NOT NULL,
-  `product_id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `barberTPV`;
+CREATE TABLE IF NOT EXISTS `barberTPV` (
+  `basketID` int(11) NOT NULL,
+  `productID` int(11) NOT NULL,
   `id` int(11) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
@@ -58,11 +58,11 @@ CREATE TABLE IF NOT EXISTS `basket_product` (
 --
 DROP VIEW IF EXISTS `basket_view`;
 CREATE TABLE IF NOT EXISTS `basket_view` (
-`basket_id` int(11)
-,`product_id` int(11)
+`basketID` int(11)
+,`productID` int(11)
 ,`id` int(11)
-,`product_name` varchar(200)
-,`product_cost` float
+,`productName` varchar(200)
+,`productCost` float
 );
 
 -- --------------------------------------------------------
@@ -122,7 +122,7 @@ CREATE TABLE IF NOT EXISTS `user` (
 DROP TABLE IF EXISTS `basket_view`;
 
 DROP VIEW IF EXISTS `basket_view`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `basket_view`  AS SELECT `basket_product`.`basket_id` AS `basket_id`, `basket_product`.`product_id` AS `product_id`, `basket_product`.`id` AS `id`, `product`.`name` AS `product_name`, `product`.`cost` AS `product_cost` FROM (`basket_product` join `product` on((`basket_product`.`product_id` = `product`.`id`))) ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `basket_view`  AS SELECT `barberTPV`.`basketID` AS `basketID`, `barberTPV`.`productID` AS `productID`, `barberTPV`.`id` AS `id`, `product`.`name` AS `productName`, `product`.`cost` AS `productCost` FROM (`barberTPV` join `product` on((`barberTPV`.`productID` = `product`.`id`))) ;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
