@@ -24,19 +24,20 @@ class Main extends BaseController
             return view('main/index', $data);
         }
 
-        $role = $this->session->get('role');
+        $objModel = new Main_Model;
 
-        if ($role == 1) // ADMIN
+        if ($this->session->get('role') == 1) // ADMIN
         {
             $data = array();
             $data['page'] = 'main/cPanel';
+            $data['totalDayProduction'] = $objModel->getTotalDayProduction();
 
             return view('main/index', $data);
         }
-        elseif($role == 2) // EMPLOYEE
+        elseif($this->session->get('role') == 2) // EMPLOYEE
         {
             $userID = (int) $this->session->get('id');
-            $objModel = new Main_Model;
+            
             $employee = $objModel->getUserData($userID);
 
             $data = array();

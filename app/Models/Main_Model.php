@@ -428,4 +428,24 @@ class Main_Model extends Model
 
         return $query[0]->basketID;
     }
+
+    public function getTotalDayProduction($userID = '')
+    {
+        $today = date('d-m-Y');
+
+        $query = $this->db->table('basket')
+        ->where('dateCalc', $today)
+        ->where('total !=', NULL);
+        
+        $data = $query->get()->getResult();
+        $countData = sizeof($data);
+        $total = 0;
+
+        for($i = 0; $i < $countData; $i++)
+        {
+            $total = $total + $data[$i]->total;
+        }
+
+        return $total;
+    }
 }
