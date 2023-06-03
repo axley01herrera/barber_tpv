@@ -2,7 +2,11 @@
     <div class="row">
         <div class="col-12 mt-5">
             <?php 
-                if($role == 1) echo view('main/component/btnControlPanel');
+                if($role == 1)
+                {
+                    echo view('main/component/btnControlPanel');
+                    echo view('main/component/btnListEmployee');
+                } 
                 else echo view('main/component/btnLogout');
             ?>
         </div>

@@ -27,7 +27,7 @@
 </div>
 <div class="row">
     <div class="col-12 text-end">
-        <h4 id="basket-total" class="m-0 fw-semibold">Total: <?php echo '€ ' . number_format((float) $total, 2, ".", ','); ?></h4>
+        <h4 id="basket-total" class="m-0 fw-semibold text-light">Total: <?php echo '€ ' . number_format((float) $total, 2, ".", ','); ?></h4>
     </div>
     <div class="col-12 text-end">
         <button type="button" id="btn-charge" class="btn btn-sm btn-success">Cobrar</button>

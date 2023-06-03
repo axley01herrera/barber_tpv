@@ -1,0 +1,1 @@
+<a class="btn btn-sm btn-primary" href="<?php echo base_url('Main/listEmployee');?>"><i class="mdi mdi-account-group-outline"></i> Lista de Empleados</a>

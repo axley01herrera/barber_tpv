@@ -32,6 +32,7 @@ class Main extends BaseController
             $data['role'] = $this->session->get('role');
             $data['totalDayProduction'] = $objModel->getTotalDayProduction();
             $data['charData'] = $objModel->getCpanelChartEmployees();
+            $data['chartWeek'] = $objModel->getCpanelChartWeek();
             $data['page'] = 'main/cPanel';
 
             return view('main/index', $data);
@@ -45,6 +46,7 @@ class Main extends BaseController
             $data['role'] = $this->session->get('role');
             $data['employee'] = $employee;
             $data['page'] = 'main/employeeDetail';
+            $data['totalDayProduction'] = $objModel->getTotalDayProduction($userID);
 
             return view('main/index', $data);
         }

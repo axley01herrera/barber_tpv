@@ -238,7 +238,7 @@ class Main_Model extends Model
     public function getProductData($id)
     {
         $query = $this->db->table('product')
-        ->where('id', $id);
+            ->where('id', $id);
 
         return $query->get()->getResult();
     }
@@ -248,15 +248,12 @@ class Main_Model extends Model
         $return = array();
 
         $query = $this->db->table('product')
-        ->where('id', $id)->update($data); 
+            ->where('id', $id)->update($data);
 
-        if($query == true)
-        {
+        if ($query == true) {
             $return['error'] = 0;
             $return['id'] = $id;
-        }
-        else
-        {
+        } else {
             $return['error'] = 1;
             $return['id'] = $id;
         }
@@ -267,8 +264,8 @@ class Main_Model extends Model
     public function deleteProduct($id)
     {
         $query = $this->db->table('product')
-        ->where('id', $id)
-        ->delete(); 
+            ->where('id', $id)
+            ->delete();
 
         return $query->resultID;
     }
@@ -323,16 +320,13 @@ class Main_Model extends Model
         $return = array();
 
         $query = $this->db->table('basket')
-        ->where('id', $id)
-        ->update($data);
+            ->where('id', $id)
+            ->update($data);
 
-        if($query == true)
-        {
+        if ($query == true) {
             $return['error'] = 0;
             $return['id'] = $id;
-        }
-        else
-        {
+        } else {
             $return['error'] = 1;
             $return['id'] = $id;
         }
@@ -344,22 +338,28 @@ class Main_Model extends Model
     {
         $query = $this->db->table('basket_dt');
 
+        if (!empty($id)) {
+            $query->where('userID', $id);
+        } else {
+            $query->groupStart();
+            $query->where('1', null, false); // Condición falsa para evitar que la cláusula WHERE sea vacía
+            $query->groupEnd();
+        }
+
         if (!empty($params['search'])) {
+            $query->groupStart();
             $query->like('formattedDate', $params['search']);
             $query->orLike('basketID', $params['search']);
             $query->orLike('userName', $params['search']);
             $query->orLike('userLastName', $params['search']);
             $query->orLike('paymentMethod', $params['search']);
             $query->orLike('total', $params['search']);
+            $query->groupEnd();
         }
 
-        if(!empty($id))
-            $query->where('userID', $id);
-            
         $query->offset($params['start']);
         $query->limit($params['length']);
         $query->orderBy($this->getBasketDTProcessingSort($params['sortColumn'], $params['sortDir']));
-
 
         return $query->get()->getResult();
     }
@@ -434,18 +434,17 @@ class Main_Model extends Model
         $today = date('d-m-Y');
 
         $query = $this->db->table('basket')
-        ->where('dateCalc', (string) $today)
-        ->where('status', 2);
+            ->where('dateCalc', (string) $today)
+            ->where('status', 2);
 
-        if($userID != '')
+        if ($userID != '')
             $query->where('userID', $userID);
-        
+
         $data = $query->get()->getResult();
         $countData = sizeof($data);
         $total = 0;
 
-        for($i = 0; $i < $countData; $i++)
-        {
+        for ($i = 0; $i < $countData; $i++) {
             $total = (float) $total + (float) $data[$i]->total;
         }
 
@@ -455,8 +454,8 @@ class Main_Model extends Model
     public function getCpanelChartEmployees()
     {
         $query = $this->db->table('user')
-        ->select('id, name')
-        ->where('status', 1);
+            ->select('id, name')
+            ->where('status', 1);
 
         $data = $query->get()->getResult();
         $countData = sizeof($data);
@@ -464,8 +463,7 @@ class Main_Model extends Model
         $cat = array();
         $serie = array();
 
-        for($i = 0; $i < $countData; $i++)
-        {
+        for ($i = 0; $i < $countData; $i++) {
             $cat[$i] = $data[$i]->name;
             $serie[$i] = $this->getTotalDayProduction($data[$i]->id);
         }
@@ -474,5 +472,46 @@ class Main_Model extends Model
         $charData['serie'] = $serie;
 
         return $charData;
+    }
+
+    public function getCpanelChartWeek()
+    {
+        $firstDayOfWeek = date('Y-m-d', strtotime('monday this week')); // Get the first day of the week (Monday)
+        $lastDayOfWeek = date('Y-m-d', strtotime('sunday this week')); // Get the last day of the week (Sunday) 
+        
+        $query = $this->db->table('basket')
+        ->where('date >=', $firstDayOfWeek)
+        ->where('date <=', $lastDayOfWeek)
+        ->where('status', 2);
+
+        $data = $query->get()->getResult();
+        $countData = sizeof($data);
+
+        $serie['mon'] = 0;
+        $serie['tue'] = 0;
+        $serie['wed'] = 0;
+        $serie['thu'] = 0;
+        $serie['fri'] = 0;
+        $serie['sat'] = 0;
+        $serie['sun'] = 0;
+        $serie['total'] = 0;
+
+        $firstDay = date('d-m-Y', strtotime($firstDayOfWeek)); 
+        $lastDay = date('d-m-Y', strtotime($lastDayOfWeek));
+
+        for($i = 0; $i < $countData; $i++)
+        {
+            if($firstDay == $data[$i]->dateCalc) $serie['mon'] = $serie['mon'] + $data[$i]->total;
+            elseif(date('d-m-Y', strtotime($firstDay.'+1 day')) == $data[$i]->dateCalc) $serie['tue'] = $serie['tue'] + $data[$i]->total;
+            elseif(date('d-m-Y', strtotime($firstDay.'+2 day')) == $data[$i]->dateCalc) $serie['wed'] = $serie['wed'] + $data[$i]->total;
+            elseif(date('d-m-Y', strtotime($firstDay.'+3 day')) == $data[$i]->dateCalc) $serie['thu'] = $serie['thu'] + $data[$i]->total;
+            elseif(date('d-m-Y', strtotime($firstDay.'+4 day')) == $data[$i]->dateCalc) $serie['fri'] = $serie['fri'] + $data[$i]->total;
+            elseif(date('d-m-Y', strtotime($firstDay.'+5 day')) == $data[$i]->dateCalc) $serie['sat'] = $serie['sat'] + $data[$i]->total;
+            elseif(date('d-m-Y', strtotime($firstDay.'+6 day')) == $data[$i]->dateCalc) $serie['sun'] = $serie['sun'] + $data[$i]->total;
+        }
+        
+        $serie['total'] = $serie['total'] + $serie['mon'] + $serie['tue'] + $serie['wed'] + $serie['thu'] + $serie['fri'] + $serie['sat'] + $serie['sun'];
+
+        return $serie;
     }
 }
