@@ -33,15 +33,14 @@
 
         let resultCheckRequiredValues = checkRequiredValues('modal-required');
 
-        if (resultCheckRequiredValues == 0) 
-        {
-    
-            if(action == 'create')
+        if (resultCheckRequiredValues == 0) {
+
+            if (action == 'create')
                 ajaxCreate();
-            else if(action == 'update')
+            else if (action == 'update')
                 ajaxUpdate();
-                
-         }
+
+        }
     });
 
     function ajaxCreate() {
@@ -57,7 +56,6 @@
             dataType: "json",
 
         }).done(function(jsonResponse) {
-            console.log(jsonResponse)
 
             if (jsonResponse.error == 0) // SUCCESS
             {
@@ -143,8 +141,6 @@
             dataType: "json",
 
         }).done(function(jsonResponse) {
-
-            console.log(jsonResponse)
 
             if (jsonResponse.error == 0) // SUCCESS
             {

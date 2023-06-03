@@ -16,7 +16,7 @@
                     </div>
                     <div class="col-12 ">
                         <label for="txt-lastName">Apellido</label>
-                        <input id="txt-lastName" type="text" class="form-control modal-required focus" value="<?php echo @$user_data[0]->last_name; ?>" />
+                        <input id="txt-lastName" type="text" class="form-control modal-required focus" value="<?php echo @$user_data[0]->lastName; ?>" />
                         <p id="msg-txt-lastName" class="text-danger text-end"></p>
                     </div>
                     <div class="col-12 ">
@@ -29,13 +29,8 @@
                         <select id="sel-role" class="form-select modal-required focus">
                             <option value="" hidden></option>
                             <option <?php if (@$user_data[0]->role == 1) echo "selected"; ?> value="1">Administrador</option>
-                            <option <?php if (@$user_data[0]->role == 2) echo "selected"; ?> value="2">Básico</option>
+                            <option <?php if (@$user_data[0]->role == 2) echo "selected"; ?> value="2">Empleado</option>
                         </select>
-                    <div class="col-12 ">
-                        <label for="txt-password">Contraseña</label>
-                        <input id="txt-password" type="password" class="form-control modal-required focus modal-password" value="<?php echo @$user_data[0]->clave; ?>" />
-                        <p id="msg-txt-password" class="text-danger text-end"></p>
-                    </div>
                         <p id="msg-sel-role" class="text-danger text-end"></p>
                     </div>
 
@@ -44,7 +39,7 @@
                             <div>
                                 <span>Role <strong>Administrador</strong> acceso total al sistema.</span>
                                 <br>
-                                <span>Role <strong>Básico</strong> acceso al TPV.</span>
+                                <span>Role <strong>Empleado</strong> acceso al TPV.</span>
                             </div>
                         </div>
                     </div>
@@ -68,7 +63,7 @@
             if (action == 'create')
                 ajaxCreate();
             else if (action == 'update')
-                ajaxUpdate();
+                ajxUpdate();
 
         }
     });
@@ -84,12 +79,10 @@
                 'lastName': $('#txt-lastName').val(),
                 'email': $('#txt-email').val(),
                 'role': $('#sel-role').val(),
-                'password': $('#txt-password').val()
             },
             dataType: "json",
 
         }).done(function(jsonResponse) {
-            console.log(jsonResponse)
 
             if (jsonResponse.error == 0) // SUCCESS
             {
@@ -165,7 +158,7 @@
 
     }
 
-    function ajaxUpdate() {
+    function ajxUpdate() {
 
         $.ajax({
 
@@ -176,14 +169,11 @@
                 'lastName': $('#txt-lastName').val(),
                 'email': $('#txt-email').val(),
                 'role': $('#sel-role').val(),
-                'password': $('#txt-password').val(),
                 'userID': '<?php echo @$user_data[0]->id; ?>',
             },
             dataType: "json",
 
         }).done(function(jsonResponse) {
-
-            console.log(jsonResponse)
 
             if (jsonResponse.error == 0) // SUCCESS
             {

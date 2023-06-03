@@ -6,11 +6,11 @@ use CodeIgniter\CLI\Console;
 use CodeIgniter\Model;
 use CodeIgniter\Database\MySQLi\Builder;
 
-class Main_Model extends Model 
+class Main_Model extends Model
 {
     protected $db;
-    
-    function  __construct () 
+
+    function  __construct()
     {
         parent::__construct();
         $this->db = \Config\Database::connect();
@@ -19,19 +19,18 @@ class Main_Model extends Model
     public function verifyCredentials($email, $clave)
     {
         $query = $this->db->table('user')
-        ->where('email', $email)
-        ->where('clave', $clave);
+            ->where('email', $email)
+            ->where('clave', $clave);
 
-        return $query->get()->getResult(); 
+        return $query->get()->getResult();
     }
 
-    public function checkEmailExist($email, $id = '') 
+    public function checkEmailExist($email, $id = '')
     {
         $query = $this->db->table('user')
-        ->where('email', $email);
+            ->where('email', $email);
 
-        if(!empty($id))
-        {
+        if (!empty($id)) {
             $IDs = array();
             $IDs[0] = $id;
             $query->whereNotIn('id', $IDs);
@@ -43,8 +42,8 @@ class Main_Model extends Model
     public function getTotalUser()
     {
         $query = $this->db->table('user')
-        ->selectCount('id')
-        ->get()->getResult(); 
+            ->selectCount('id')
+            ->get()->getResult();
 
         return $query[0]->id;
     }
@@ -53,10 +52,9 @@ class Main_Model extends Model
     {
         $query = $this->db->table('user');
 
-        if(!empty($params['search']))
-        {
+        if (!empty($params['search'])) {
             $query->like('name', $params['search']);
-            $query->orLike('last_name', $params['search']);
+            $query->orLike('lastName', $params['search']);
             $query->orLike('email', $params['search']);
         }
 
@@ -71,36 +69,32 @@ class Main_Model extends Model
     {
         $sort = '';
 
-        if($column == 0)
-        {
-            if($dir == 'asc')
-                $sort = 'name ASC'; 
+        if ($column == 0) {
+            if ($dir == 'asc')
+                $sort = 'name ASC';
             else
-                $sort = 'name DESC'; 
+                $sort = 'name DESC';
         }
 
-        if($column == 1)
-        {
-            if($dir == 'asc')
-                $sort = 'last_name ASC'; 
+        if ($column == 1) {
+            if ($dir == 'asc')
+                $sort = 'lastName ASC';
             else
-                $sort = 'last_name DESC'; 
+                $sort = 'lastName DESC';
         }
 
-        if($column == 2)
-        {
-            if($dir == 'asc')
-                $sort = 'email ASC'; 
+        if ($column == 2) {
+            if ($dir == 'asc')
+                $sort = 'email ASC';
             else
-                $sort = 'email DESC'; 
+                $sort = 'email DESC';
         }
 
-        if($column == 3)
-        {
-            if($dir == 'asc')
-                $sort = 'status ASC'; 
+        if ($column == 3) {
+            if ($dir == 'asc')
+                $sort = 'status ASC';
             else
-                $sort = 'status DESC'; 
+                $sort = 'status DESC';
         }
 
         return $sort;
@@ -111,16 +105,14 @@ class Main_Model extends Model
         $return = array();
 
         $query = $this->db->table('user')
-        ->insert($data);
+            ->insert($data);
 
-        if($query->resultID == true)
-        {
+        if ($query->resultID == true) {
             $return['error'] = 0;
             $return['id'] = $query->connID->insert_id;
-        }
-        else
+        } else
             $return['error'] = 1;
-        
+
         return $return;
     }
 
@@ -129,15 +121,12 @@ class Main_Model extends Model
         $return = array();
 
         $query = $this->db->table('user')
-        ->where('id', $id)->update($data); 
+            ->where('id', $id)->update($data);
 
-        if($query == true)
-        {
+        if ($query == true) {
             $return['error'] = 0;
             $return['id'] = $id;
-        }
-        else
-        {
+        } else {
             $return['error'] = 1;
             $return['id'] = $id;
         }
@@ -145,22 +134,21 @@ class Main_Model extends Model
         return $return;
     }
 
-    public function deleteUser($id)
-    {
-
-        $query = $this->db->table('user')
-        ->where('id', $id)
-        ->delete(); 
-
-        return $query;
-    }
-
     public function getUserData($id)
     {
         $query = $this->db->table('user')
-        ->where('id', $id);
+            ->where('id', $id);
 
         return $query->get()->getResult();
+    }
+
+    public function deleteUser($id)
+    {
+        $query = $this->db->table('user')
+            ->where('id', $id)
+            ->delete();
+
+        return $query->resultID;
     }
 
     public function createProducts($data)
@@ -168,26 +156,23 @@ class Main_Model extends Model
         $return = array();
 
         $query = $this->db->table('product')
-        ->insert($data);
+            ->insert($data);
 
-        if($query->resultID == true)
-        {
+        if ($query->resultID == true) {
             $return['error'] = 0;
             $return['id'] = $query->connID->insert_id;
-        }
-        else
+        } else
             $return['error'] = 1;
-        
+
         return $return;
     }
 
-    public function checkProductExist($name, $id='')
+    public function checkProductExist($name, $id = '')
     {
         $query = $this->db->table('product')
-        ->where('name', $name);
+            ->where('name', $name);
 
-        if(!empty($id))
-        {
+        if (!empty($id)) {
             $IDs = array();
             $IDs[0] = $id;
             $query->whereNotIn('id', $IDs);
@@ -200,8 +185,7 @@ class Main_Model extends Model
     {
         $query = $this->db->table('product');
 
-        if(!empty($params['search']))
-        {
+        if (!empty($params['search'])) {
             $query->like('name', $params['search']);
             $query->orLike('cost', $params['search']);
         }
@@ -209,6 +193,44 @@ class Main_Model extends Model
         $query->offset($params['start']);
         $query->limit($params['length']);
         $query->orderBy($this->getProductsProcessingSort($params['sortColumn'], $params['sortDir']));
+
+        return $query->get()->getResult();
+    }
+
+    public function getProductsProcessingSort($column, $dir)
+    {
+        $sort = '';
+
+        if ($column == 0) {
+            if ($dir == 'asc')
+                $sort = 'name ASC';
+            else
+                $sort = 'name DESC';
+        }
+
+        if ($column == 1) {
+            if ($dir == 'asc')
+                $sort = 'cost ASC';
+            else
+                $sort = 'cost DESC';
+        }
+
+        return $sort;
+    }
+
+    public function getTotalProducts()
+    {
+        $query = $this->db->table('product')
+            ->selectCount('id')
+            ->get()->getResult();
+
+        return $query[0]->id;
+    }
+
+    public function getProducts()
+    {
+        $query = $this->db->table('product')
+            ->select('*');
 
         return $query->get()->getResult();
     }
@@ -242,46 +264,215 @@ class Main_Model extends Model
         return $return;
     }
 
-    public function getProductsProcessingSort($column, $dir)
+    public function deleteProduct($id)
+    {
+        $query = $this->db->table('product')
+        ->where('id', $id)
+        ->delete(); 
+
+        return $query->resultID;
+    }
+
+    public function createBasket($data)
+    {
+        $query = $this->db->table('basket')
+            ->insert($data);
+
+        if ($query->resultID == true) {
+            $return['error'] = 0;
+            $return['id'] = $query->connID->insert_id;
+        } else
+            $return['error'] = 1;
+
+        return $return;
+    }
+
+    public function createBasketProduct($data)
+    {
+        $query = $this->db->table('basketproduct')
+            ->insert($data);
+
+        if ($query->resultID == true) {
+            $return['error'] = 0;
+            $return['id'] = $query->connID->insert_id;
+        } else
+            $return['error'] = 1;
+
+        return $return;
+    }
+
+    public function getBasketView($basketID)
+    {
+        $query = $this->db->table('basket_view')
+            ->where('basketID', $basketID);
+
+        return $query->get()->getResult();
+    }
+
+    public function deleteBasketProduct($id)
+    {
+        $query = $this->db->table('basketproduct')
+            ->where('id', $id)
+            ->delete();
+
+        return $query->resultID;
+    }
+
+    public function updateBasket($data, $id)
+    {
+        $return = array();
+
+        $query = $this->db->table('basket')
+        ->where('id', $id)
+        ->update($data);
+
+        if($query == true)
+        {
+            $return['error'] = 0;
+            $return['id'] = $id;
+        }
+        else
+        {
+            $return['error'] = 1;
+            $return['id'] = $id;
+        }
+
+        return $return;
+    }
+
+    public function getBasketDTProcessingData($params, $id = '')
+    {
+        $query = $this->db->table('basket_dt');
+
+        if (!empty($params['search'])) {
+            $query->like('formattedDate', $params['search']);
+            $query->orLike('basketID', $params['search']);
+            $query->orLike('userName', $params['search']);
+            $query->orLike('userLastName', $params['search']);
+            $query->orLike('paymentMethod', $params['search']);
+            $query->orLike('total', $params['search']);
+        }
+
+        if(!empty($id))
+            $query->where('userID', $id);
+            
+        $query->offset($params['start']);
+        $query->limit($params['length']);
+        $query->orderBy($this->getBasketDTProcessingSort($params['sortColumn'], $params['sortDir']));
+
+
+        return $query->get()->getResult();
+    }
+
+    public function getBasketDTProcessingSort($column, $dir)
     {
         $sort = '';
 
-        if($column == 0)
-        {
-            if($dir == 'asc')
-                $sort = 'name ASC'; 
+        if ($column == 0) {
+            if ($dir == 'asc')
+                $sort = 'formattedDate ASC';
             else
-                $sort = 'name DESC'; 
+                $sort = 'formattedDate DESC';
         }
 
-        if($column == 1)
-        {
-            if($dir == 'asc')
-                $sort = 'cost ASC'; 
+        if ($column == 1) {
+            if ($dir == 'asc')
+                $sort = 'basketID ASC';
             else
-                $sort = 'cost DESC'; 
+                $sort = 'basketID DESC';
+        }
+
+        if ($column == 2) {
+            if ($dir == 'asc')
+                $sort = 'userName ASC';
+            else
+                $sort = 'userName DESC';
+        }
+
+        if ($column == 3) {
+            if ($dir == 'asc')
+                $sort = 'userLastName ASC';
+            else
+                $sort = 'userLastName DESC';
+        }
+
+        if ($column == 4) {
+            if ($dir == 'asc')
+                $sort = 'paymentMethod ASC';
+            else
+                $sort = 'paymentMethod DESC';
+        }
+
+        if ($column == 4) {
+            if ($dir == 'asc')
+                $sort = 'paymentMethod ASC';
+            else
+                $sort = 'paymentMethod DESC';
+        }
+
+        if ($column == 5) {
+            if ($dir == 'asc')
+                $sort = 'total ASC';
+            else
+                $sort = 'total DESC';
         }
 
         return $sort;
     }
 
-    public function deleteProduct($id)
+    public function getTotalBasketDT()
     {
+        $query = $this->db->table('basket_dt')
+            ->selectCount('basketID')
+            ->get()->getResult();
 
-        $query = $this->db->table('product')
-        ->where('id', $id)
-        ->delete(); 
-
-        return $query;
+        return $query[0]->basketID;
     }
 
-    public function getTotalProducts()
+    public function getTotalDayProduction($userID = '')
     {
-        $query = $this->db->table('product')
-        ->selectCount('id')
-        ->get()->getResult(); 
+        $today = date('d-m-Y');
 
-        return $query[0]->id;
+        $query = $this->db->table('basket')
+        ->where('dateCalc', (string) $today)
+        ->where('status', 2);
+
+        if($userID != '')
+            $query->where('userID', $userID);
+        
+        $data = $query->get()->getResult();
+        $countData = sizeof($data);
+        $total = 0;
+
+        for($i = 0; $i < $countData; $i++)
+        {
+            $total = (float) $total + (float) $data[$i]->total;
+        }
+
+        return $total;
     }
 
+    public function getCpanelChartEmployees()
+    {
+        $query = $this->db->table('user')
+        ->select('id, name')
+        ->where('status', 1);
+
+        $data = $query->get()->getResult();
+        $countData = sizeof($data);
+
+        $cat = array();
+        $serie = array();
+
+        for($i = 0; $i < $countData; $i++)
+        {
+            $cat[$i] = $data[$i]->name;
+            $serie[$i] = $this->getTotalDayProduction($data[$i]->id);
+        }
+
+        $charData['cat'] = $cat;
+        $charData['serie'] = $serie;
+
+        return $charData;
+    }
 }
