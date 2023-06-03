@@ -168,12 +168,15 @@ class Main extends BaseController
         $userLoggedID = (int) $this->session->get('id');
         $userID = (int) $this->request->uri->getSegment(3);
 
-        if ($userLoggedID != $userID) {
-            $data = array();
-            $data['page'] = 'main/logout';
-            $data['msg'] = 'Sessión Expirada';
-
-            return view('main/index', $data);
+        if($this->session->get('role') == 2)
+        {
+            if ($userLoggedID != $userID) {
+                $data = array();
+                $data['page'] = 'main/logout';
+                $data['msg'] = 'Sessión Expirada';
+    
+                return view('main/index', $data);
+            }
         }
 
         $objModel = new Main_Model;
