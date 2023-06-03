@@ -98,29 +98,9 @@
 
                     }).done(function(jsonResponse) {
 
-                        if (jsonResponse.error == 0) {
-                            const Toast = Swal.mixin({
-                                toast: true,
-                                position: 'top-end',
-                                showConfirmButton: false,
-                                timer: 1000,
-                                timerProgressBar: true,
-                                didOpen: (toast) => {
-                                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
-                                }
-                            })
-
-                            Toast.fire({
-                                icon: 'success',
-                                title: jsonResponse.msg
-                            });
-
-                            setTimeout(() => {
-                                 window.location.href = "<?php echo base_url('Main'); ?>";
-                            }, "2000");
-
-                        } else {
+                        if (jsonResponse.error == 0)
+                            window.location.href = "<?php echo base_url('Main'); ?>";
+                        else {
                             const Toast = Swal.mixin({
                                 toast: true,
                                 position: 'top-end',

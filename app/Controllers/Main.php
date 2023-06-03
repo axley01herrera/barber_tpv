@@ -26,10 +26,22 @@ class Main extends BaseController
 
         $role = $this->session->get('role');
 
-        if ($role == 1) // Admin
+        if ($role == 1) // ADMIN
         {
             $data = array();
             $data['page'] = 'main/cPanel';
+
+            return view('main/index', $data);
+        }
+        elseif($role == 2) // EMPLOYEE
+        {
+            $userID = (int) $this->session->get('id');
+            $objModel = new Main_Model;
+            $employee = $objModel->getUserData($userID);
+
+            $data = array();
+            $data['employee'] = $employee;
+            $data['page'] = 'main/employeeDetail';
 
             return view('main/index', $data);
         }
@@ -100,7 +112,7 @@ class Main extends BaseController
             if ($result[$i]->role == 1) {
                 $role = '<span class="badge badge-soft-primary">Administrador</span>';
             } else {
-                $role = '<span class="badge badge-soft-secondary">Básico</span>';
+                $role = '<span class="badge badge-soft-secondary">Empleado</span>';
             }
 
             $clave = '';
@@ -613,6 +625,7 @@ class Main extends BaseController
         if ($result_create_basket['error'] == 0) {
             $data = array();
             $data['basketID'] = $result_create_basket['id'];
+            $data['userRole'] = $this->session->get('role');
             $data['page'] = 'main/tpv';
         }
 
@@ -726,7 +739,13 @@ class Main extends BaseController
 
     public function processingBasketDT()
     {
+        $userID = '';
+
         $dataTableRequest = $_REQUEST;
+
+
+        if(!empty($this->request->getPost('userID')))
+            $userID = $this->request->getPost('userID');
 
         $params = array();
         $params['draw'] = $dataTableRequest['draw'];
@@ -740,7 +759,7 @@ class Main extends BaseController
         $totalRecords = 0;
 
         $objModel = new Main_Model;
-        $result = $objModel->getBasketDTProcessingData($params);
+        $result = $objModel->getBasketDTProcessingData($params, $userID);
         $totalRows = sizeof($result);
 
         for ($i = 0; $i < $totalRows; $i++) {
@@ -751,7 +770,7 @@ class Main extends BaseController
             $col['userName'] = $result[$i]->userName;
             $col['userlastName'] = $result[$i]->userLastName;
             $col['paymentType'] = $result[$i]->paymentMethod;
-            $col['Total'] = $result[$i]->total;
+            $col['Total'] = '€ ' . number_format((float) $result[$i]->total, 2, ".", ',');
      
             $row[$i] =  $col;
         }

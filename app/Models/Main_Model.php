@@ -340,7 +340,7 @@ class Main_Model extends Model
         return $return;
     }
 
-    public function getBasketDTProcessingData($params)
+    public function getBasketDTProcessingData($params, $id = '')
     {
         $query = $this->db->table('basket_dt');
 
@@ -353,6 +353,9 @@ class Main_Model extends Model
             $query->orLike('total', $params['search']);
         }
 
+        if(!empty($id))
+            $query->where('userID', $id);
+            
         $query->offset($params['start']);
         $query->limit($params['length']);
         $query->orderBy($this->getBasketDTProcessingSort($params['sortColumn'], $params['sortDir']));

@@ -1,5 +1,8 @@
 <div class="container">
     <div class="row">
+        <div class="col-12 mt-5">
+            <?php echo view('main/component/btnLogout');?>
+        </div>
         <div class="col-12 col-lg-4 mt-5">
             <div class="card">
                 <div class="mt-2">
@@ -18,12 +21,13 @@
         <div class="col-12 col-lg-8 mt-5">
             <div class="card ">
                 <div class="card-body">
+                    <h4 class="card-title mb-2"><i class="mdi mdi-clipboard-edit-outline"></i> Tickets</h4>
                     <div class="table-responsive">
                         <table id="dataTable" class="table" style="width: 100%;">
                             <thead>
                                 <tr>
                                     <th><strong>Fecha</strong></th>
-                                    <th><strong>Ticket ID</strong></th>
+                                    <th hidden><strong>Ticket ID</strong></th>
                                     <th hidden><strong>Nombre</strong></th>
                                     <th hidden><strong>Apellido</strong></th>
                                     <th class="text-center"><strong>Tipo de Cobro</strong></th>
@@ -56,7 +60,10 @@
         },
         ajax: {
             url: "<?php echo base_url('Main/processingBasketDT'); ?>",
-            type: "POST"
+            type: "POST",
+            data: function(d) {
+                d.userID = '<?php echo $employee[0]->id; ?>'
+            }
         },
         order: [
             [0, 'desc']
@@ -65,7 +72,8 @@
                 data: 'date'
             },
             {
-                data: 'ticketID'
+                data: 'ticketID',
+                visible: false,
             },
             {
                 data: 'userName',
