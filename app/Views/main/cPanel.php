@@ -1,6 +1,6 @@
 <div class="container">
     <div class="row mt-5">
-        <div class="col-12 text-center">
+        <div class="col-12">
             <h1 class="text-primary">
                 <i class="mdi mdi-application-cog"></i> Panel de Control
             </h1>
