@@ -780,7 +780,7 @@ class Main extends BaseController
             $col['ticketID'] = $result[$i]->basketID;
             $col['userName'] = $result[$i]->userName;
             $col['userlastName'] = $result[$i]->userLastName;
-            $col['paymentType'] = '<span class="ms-0 me-1"><i data-basket-id style="cursor: pointer;" class="edit-payment-method mdi mdi-comment-edit-outline text-warning"></i></span>'.$result[$i]->paymentMethod ;
+            $col['paymentType'] = '<span class="ms-0 me-1"><i data-pay-type="'.$result[$i]->payType.'" data-basket-id="'.$result[$i]->basketID.'" style="cursor: pointer;" class="edit-payment-method mdi mdi-comment-edit-outline text-warning"></i></span>'.$result[$i]->paymentMethod ;
             $col['Total'] = '€ ' . number_format((float) $result[$i]->total, 2, ".", ',');
      
             $row[$i] =  $col;

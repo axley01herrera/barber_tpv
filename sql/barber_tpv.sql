@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 03-06-2023 a las 15:07:43
+-- Tiempo de generación: 03-06-2023 a las 15:49:56
 -- Versión del servidor: 5.7.36
 -- Versión de PHP: 7.4.26
 
@@ -66,6 +66,7 @@ CREATE TABLE IF NOT EXISTS `basket_dt` (
 ,`userID` int(11)
 ,`userName` varchar(100)
 ,`userLastName` varchar(100)
+,`payType` int(1)
 ,`paymentMethod` varchar(8)
 ,`total` float
 );
@@ -142,7 +143,7 @@ CREATE TABLE IF NOT EXISTS `user` (
 DROP TABLE IF EXISTS `basket_dt`;
 
 DROP VIEW IF EXISTS `basket_dt`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `basket_dt`  AS SELECT date_format(`basket`.`date`,'%d-%m-%Y %H:%i:%s') AS `formattedDate`, `basket`.`id` AS `basketID`, `basket`.`userID` AS `userID`, `user`.`name` AS `userName`, `user`.`lastName` AS `userLastName`, (case when (`basket`.`payType` = 1) then 'Efectivo' when (`basket`.`payType` = 2) then 'Tarjeta' end) AS `paymentMethod`, `basket`.`total` AS `total` FROM (`basket` join `user` on((`user`.`id` = `basket`.`userID`))) WHERE (`basket`.`total` is not null) ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `basket_dt`  AS SELECT date_format(`basket`.`date`,'%d-%m-%Y %H:%i:%s') AS `formattedDate`, `basket`.`id` AS `basketID`, `basket`.`userID` AS `userID`, `user`.`name` AS `userName`, `user`.`lastName` AS `userLastName`, `basket`.`payType` AS `payType`, (case when (`basket`.`payType` = 1) then 'Efectivo' when (`basket`.`payType` = 2) then 'Tarjeta' end) AS `paymentMethod`, `basket`.`total` AS `total` FROM (`basket` join `user` on((`user`.`id` = `basket`.`userID`))) WHERE (`basket`.`total` is not null) ;
 
 -- --------------------------------------------------------
 
