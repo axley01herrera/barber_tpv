@@ -1,4 +1,4 @@
-<div class="container">
+<div id="main-content" data-value="employeeDetail" class="container">
     <div class="row">
         <div class="col-12 mt-5">
             <?php 
@@ -20,6 +20,13 @@
                 </div>
             </div>
             <?php echo view('main/component/navTPV');?>
+            <!-- Z -->
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="font-size-xs text-uppercase">Recaudación de Hoy</h6>
+                    <h4 class="mt-4 font-weight-bold mb-2 d-flex align-items-center"><?php echo '€ ' . number_format((float) $totalDayProduction, 2, ".", ','); ?></h4>
+                </div>
+            </div>
         </div>
         <div class="col-12 col-lg-8 mt-5">
             <div class="card ">
@@ -33,7 +40,7 @@
                                     <th hidden><strong>Ticket ID</strong></th>
                                     <th hidden><strong>Nombre</strong></th>
                                     <th hidden><strong>Apellido</strong></th>
-                                    <th class="text-center"><strong>Tipo de Cobro</strong></th>
+                                    <th><strong>Tipo de Cobro</strong></th>
                                     <th class="text-end"><strong>Total</strong></th>
                                 </tr>
                             </thead>
@@ -90,7 +97,6 @@
             },
             {
                 data: 'paymentType',
-                class: 'text-center'
             },
             {
                 data: 'Total',

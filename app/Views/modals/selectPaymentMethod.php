@@ -71,6 +71,8 @@
 
                     if(from == 'tpv')
                         window.location.href = "<?php echo base_url('Main/employee');?>" + "/<?php echo $userID;?>";
+                    if(from == 'employeeDetail')
+                        dataTable.draw();
 
                 }
                 else if(jsonResponse.error == 1) // ERROR
