@@ -29,18 +29,20 @@ class Main extends BaseController
         if ($this->session->get('role') == 1) // ADMIN
         {
             $data = array();
-            $data['page'] = 'main/cPanel';
+            $data['role'] = $this->session->get('role');
             $data['totalDayProduction'] = $objModel->getTotalDayProduction();
+            $data['charData'] = $objModel->getCpanelChartEmployees();
+            $data['page'] = 'main/cPanel';
 
             return view('main/index', $data);
         }
         elseif($this->session->get('role') == 2) // EMPLOYEE
         {
             $userID = (int) $this->session->get('id');
-            
             $employee = $objModel->getUserData($userID);
 
             $data = array();
+            $data['role'] = $this->session->get('role');
             $data['employee'] = $employee;
             $data['page'] = 'main/employeeDetail';
 
@@ -178,6 +180,7 @@ class Main extends BaseController
         $employee = $objModel->getUserData($userID);
 
         $data = array();
+        $data['role'] = $this->session->get('role');
         $data['employee'] = $employee;
         $data['page'] = 'main/employeeDetail';
 
@@ -617,11 +620,14 @@ class Main extends BaseController
             return view('main/index', $data);
         }
 
-        $data_basket = array();
-        $data_basket['userID'] = $this->session->get('id');
+        $today = date('d-m-Y');
 
+        $dataBasket = array();
+        $dataBasket['userID'] = $this->session->get('id');
+        $dataBasket['dateCalc'] = $today;
+        
         $objModel = new Main_Model;
-        $result_create_basket = $objModel->createBasket($data_basket);
+        $result_create_basket = $objModel->createBasket($dataBasket);
 
         if ($result_create_basket['error'] == 0) {
             $data = array();

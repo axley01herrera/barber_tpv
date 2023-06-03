@@ -434,8 +434,11 @@ class Main_Model extends Model
         $today = date('d-m-Y');
 
         $query = $this->db->table('basket')
-        ->where('dateCalc', $today)
-        ->where('total !=', NULL);
+        ->where('dateCalc', (string) $today)
+        ->where('status', 2);
+
+        if($userID != '')
+            $query->where('userID', $userID);
         
         $data = $query->get()->getResult();
         $countData = sizeof($data);
@@ -443,9 +446,33 @@ class Main_Model extends Model
 
         for($i = 0; $i < $countData; $i++)
         {
-            $total = $total + $data[$i]->total;
+            $total = (float) $total + (float) $data[$i]->total;
         }
 
         return $total;
+    }
+
+    public function getCpanelChartEmployees()
+    {
+        $query = $this->db->table('user')
+        ->select('id, name')
+        ->where('status', 1);
+
+        $data = $query->get()->getResult();
+        $countData = sizeof($data);
+
+        $cat = array();
+        $serie = array();
+
+        for($i = 0; $i < $countData; $i++)
+        {
+            $cat[$i] = $data[$i]->name;
+            $serie[$i] = $this->getTotalDayProduction($data[$i]->id);
+        }
+
+        $charData['cat'] = $cat;
+        $charData['serie'] = $serie;
+
+        return $charData;
     }
 }

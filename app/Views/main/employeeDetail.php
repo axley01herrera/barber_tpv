@@ -1,7 +1,10 @@
 <div class="container">
     <div class="row">
         <div class="col-12 mt-5">
-            <?php echo view('main/component/btnLogout');?>
+            <?php 
+                if($role == 1) echo view('main/component/btnControlPanel');
+                else echo view('main/component/btnLogout');
+            ?>
         </div>
         <div class="col-12 col-lg-4 mt-5">
             <div class="card">

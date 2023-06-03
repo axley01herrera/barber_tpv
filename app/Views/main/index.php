@@ -19,6 +19,7 @@
         <link href="<?php echo base_url('assets/css/app.min.css'); ?>" id="app-style" rel="stylesheet" type="text/css" />
         <link href="<?php echo base_url('assets/libs/sweetalert/sweetalert2.css'); ?>" id="app-style" rel="stylesheet" type="text/css" />
         <link href="<?php echo base_url('assets/css/datatable/dataTables.bootstrap5.min.css');?>" rel="stylesheet" type="text/css" />
+        <link href="<?php echo base_url('assets/libs/apexcharts/dist/apexcharts.css'); ?>" id="app-style" rel="stylesheet" type="text/css" />
 
         <style>
             .card-link {
@@ -39,6 +40,7 @@
         <script src="<?php echo base_url('assets/libs/sweetalert/sweetalert2.js'); ?>"></script>
         <script src="<?php echo base_url('assets/js/datatable/jquery.dataTables.min.js');?>"></script>
         <script src="<?php echo base_url('assets/js/datatable/dataTables.bootstrap5.min.js');?>"></script>
+        <script src="<?php echo base_url('assets/libs/apexcharts/dist/apexcharts.min.js');?>"></script>
        
     </head>
 
