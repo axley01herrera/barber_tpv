@@ -5,12 +5,12 @@
                 Listado de Empleados
             </h1>
         </div>
-        <div class="col-12">
+        <div class="col-12 mt-5">
             <?php echo view('main/component/btnControlPanel'); ?>
             <button id="btn-create" class="btn btn-sm btn-success">Crear Empleado</button>
         </div>
     </div>
-    <div class="card mt-5">
+    <div class="card mt-3">
         <div class="card-body">
             <div class="table-responsive">
                 <table id="dataTable" class="table" style="width: 100%;">
@@ -159,8 +159,7 @@
                     dataType: "json",
 
                 }).done(function(jsonResponse) {
-                    console.log(jsonResponse)
-
+            
                     if (jsonResponse.error == 0) // SUCCESS
                     {
                         const Toast = Swal.mixin({

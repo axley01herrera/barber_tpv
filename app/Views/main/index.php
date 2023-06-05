@@ -44,7 +44,7 @@
        
     </head>
 
-    <body>
+    <body class="bg-dark">
         <div id="main-modal"></div>
         <div class="container-fluid">
             <?php echo view($page);?>

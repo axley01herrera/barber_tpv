@@ -10,10 +10,10 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-6 text-center">
-                        <input type="radio" class="radio-payType" name="radio-payType" value="1" /> Efectivo
+                        <input id="radio-e" type="radio" class="radio-payType" name="radio-payType" value="1" /> Efectivo
                     </div>
                     <div class="col-6 text-center">
-                        <input type="radio" class="radio-payType" name="radio-payType" value="2" /> Tarjeta
+                        <input id="radio-t" type="radio" class="radio-payType" name="radio-payType" value="2" /> Tarjeta
                     </div>
 
                 </div>
@@ -24,7 +24,23 @@
 </div>
 
 <script>
-    var paymentType = '';
+    var paymentType = '<?php echo @$type; ?>';
+    var type = '<?php echo @$type; ?>';
+
+    if (type != '') {
+
+        switch (Number(type)) {
+
+            case 1:
+                $('#radio-e').trigger('click');
+                break;
+
+            case 2:
+                $('#radio-t').trigger('click');
+                break;
+
+        }
+    }
 
     $('.radio-payType').on('click', function() {
         paymentType = $(this).val();
@@ -45,7 +61,6 @@
                     'payType': paymentType
                 },
                 dataType: "json",
-
 
             }).done(function(jsonResponse) {
 
@@ -70,13 +85,14 @@
 
                     let from = $('#main-content').attr('data-value');
 
-                    if(from == 'tpv')
-                        window.location.href = "<?php echo base_url('Main/employee');?>" + "/<?php echo $userID;?>";
-                    if(from == 'employeeDetail')
+                    if (from == 'tpv')
+                        window.location.href = "<?php echo base_url('Main/employee'); ?>" + "/<?php echo $userID; ?>";
+                    if (from == 'employeeDetail') {
                         dataTable.draw();
+                        closeModal();
+                    }
 
-                }
-                else if(jsonResponse.error == 1) // ERROR
+                } else if (jsonResponse.error == 1) // ERROR
                 {
 
                     const Toast = Swal.mixin({

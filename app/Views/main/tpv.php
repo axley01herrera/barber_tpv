@@ -27,12 +27,13 @@
                 TPV
             </h1>
         </div>
+        <!-- 
         <div class="col-12">
             <?php
-            if ($userRole == 1)
-                echo view('main/component/btnControlPanel');
+            //if ($userRole == 1)
+                //echo view('main/component/btnControlPanel');
             ?>
-        </div>
+        </div>-->
     </div>
 
     <div class="row">
