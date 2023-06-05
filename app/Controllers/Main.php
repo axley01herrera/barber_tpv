@@ -28,11 +28,19 @@ class Main extends BaseController
 
         if ($this->session->get('role') == 1) // ADMIN
         {
+            if(!empty($this->request->getPostGet('year')))
+                $year = $this->request->getPostGet('year');
+            else
+                $year = date('Y');
+
             $data = array();
             $data['role'] = $this->session->get('role');
             $data['totalDayProduction'] = $objModel->getTotalDayProduction();
             $data['charData'] = $objModel->getCpanelChartEmployees();
             $data['chartWeek'] = $objModel->getCpanelChartWeek();
+            $data['chartMont'] = $objModel->getCpanelChartMont($year);
+            $data['year'] = $year;
+            $data['currentYear'] = date('Y');
             $data['page'] = 'main/cPanel';
 
             return view('main/index', $data);
@@ -47,6 +55,8 @@ class Main extends BaseController
             $data['employee'] = $employee;
             $data['page'] = 'main/employeeDetail';
             $data['totalDayProduction'] = $objModel->getTotalDayProduction($userID);
+            $data['chartWeek'] = $objModel->getCpanelChartWeek($userID);
+            $data['userLoggedID'] = (int) $this->session->get('id');
 
             return view('main/index', $data);
         }
@@ -188,6 +198,9 @@ class Main extends BaseController
         $data['role'] = $this->session->get('role');
         $data['employee'] = $employee;
         $data['totalDayProduction'] = $objModel->getTotalDayProduction($userID);
+        $data['chartWeek'] = $objModel->getCpanelChartWeek($userID);
+        $data['userLoggedID'] = (int) $this->session->get('id');
+
         $data['page'] = 'main/employeeDetail';
 
         return view('main/index', $data);
@@ -457,12 +470,30 @@ class Main extends BaseController
         $totalRows = sizeof($result);
 
         for ($i = 0; $i < $totalRows; $i++) {
+
+            $status = '';
+            $switch = '';
+
+            if ($result[$i]->status == 1) {
+                $status = '<span class="badge badge-soft-success">Activo</span>';
+                $switch = '<div style="margin-left: 44px;" class="form-check form-switch form-switch-md mb-2">
+                                                <input data-id="' . $result[$i]->id . '" data-status="' . $result[$i]->status . '" class="form-check-input switch" type="checkbox" id="flexSwitchCheckChecked" checked />
+                                            </div>';
+            } else {
+                $status = '<span class="badge badge-soft-danger">Inactivo</span>';
+                $switch = '<div style="margin-left: 44px;" class="form-check form-switch form-switch-md mb-2">
+                                                <input data-id="' . $result[$i]->id . '" data-status="' . $result[$i]->status . '" class="form-check-input switch" type="checkbox" id="flexSwitchCheckChecked" />
+                                            </div>';
+            }
+
             $btn_editProduct = '<button class="ms-1 me-1 btn btn-sm btn-warning btn-editProduct" data-id="' . $result[$i]->id . '" href="#"><span class="mdi mdi-pencil" title="Editar Producto"></span></button>';
             $btn_deleteProduct = '<button class="ms-1 me-1 btn btn-sm btn-danger btn-delete-product" data-id="' . $result[$i]->id . '" href="#"><span class="mdi mdi-delete" title="Eliminar Producto"></span></button>';
 
             $col = array();
             $col['name'] = $result[$i]->name;
             $col['cost'] = '€ ' . number_format((float) $result[$i]->cost, 2, ".", ',');
+            $col['status'] = $status;
+            $col['switch'] = $switch;
             $col['action'] = $btn_editProduct . $btn_deleteProduct;
 
             $row[$i] =  $col;
@@ -541,6 +572,43 @@ class Main extends BaseController
         } else {
             $response['error'] = 3;
             $response['msg'] = 'Ya existe un producto con el mismo nombre';
+        }
+
+        return json_encode($response);
+    }
+
+    public function changeProductStatus()
+    {
+        $response = array();
+
+        # VERIFY SESSION
+        if (empty($this->session->get('id'))) {
+            $response['error'] = 2;
+            $response['msg'] = 'Sessión Expirada';
+
+            return json_encode($response);
+        }
+
+        $objModel = new Main_Model;
+
+        $data = array();
+        $data['status'] = $this->request->getPost('status');
+
+        $result = $objModel->updateProduct($data, $this->request->getPost('id'));
+
+        if ($result['error'] == 0) {
+            $msg = '';
+
+            if ($data['status'] == 0)
+                $msg = 'Producto Desactivado';
+            elseif ($data['status'] == 1)
+                $msg = 'Producto Activado';
+
+            $response['error'] = 0;
+            $response['msg'] = $msg;
+        } else {
+            $response['error'] = 1;
+            $response['msg'] = 'Ha ocurrido un error en el proceso';
         }
 
         return json_encode($response);
@@ -717,13 +785,26 @@ class Main extends BaseController
             return view('main/index', $data);
         }
 
+        
         $data = array();
         $data['basketID'] = $this->request->getPost('basketID');
-        $data['total'] = $this->request->getPost('total');
-        $data['title'] = 'Seleccione un método de pago';
         $data['action'] = $this->request->getPost('action');
-        $data['userID'] = $this->session->get('id');
+        
+        if($data['action'] == 'create')
+            $data['total'] = $this->request->getPost('total');
+           
+        if($data['action'] == 'update')
+        {
+            $objModel = new Main_Model;
+            $result =  $objModel->getBasket($data['basketID']);
 
+            $data['type'] = $this->request->getPost('type');
+            $data['total'] = $result[0]->total;
+        }
+
+        $data['title'] = 'Seleccione un método de pago';
+        $data['userID'] = $this->session->get('id');
+            
         return view('modals/selectPaymentMethod', $data);
     }
 
@@ -741,7 +822,7 @@ class Main extends BaseController
 
         if ($resultUpdateBasket['error'] == 0) {
             $response['error'] = 0;
-            $response['msg'] = 'Ticket Creado';
+            $response['msg'] = 'Proceso realizado satisfactoriamente';
         } else {
             $response['error'] = 1;
             $response['msg'] = 'Ha ocurrido un error en el proceso';
@@ -782,7 +863,10 @@ class Main extends BaseController
             $col['ticketID'] = $result[$i]->basketID;
             $col['userName'] = $result[$i]->userName;
             $col['userlastName'] = $result[$i]->userLastName;
-            $col['paymentType'] = '<span class="ms-0 me-1"><i data-pay-type="'.$result[$i]->payType.'" data-basket-id="'.$result[$i]->basketID.'" style="cursor: pointer;" class="edit-payment-method mdi mdi-comment-edit-outline text-warning"></i></span>'.$result[$i]->paymentMethod ;
+            if($this->session->get('id') == $result[$i]->userID)
+                $col['paymentType'] = '<span class="ms-0 me-1"><i data-pay-type="'.$result[$i]->payType.'" data-basket-id="'.$result[$i]->basketID.'" style="cursor: pointer;" class="edit-payment-method mdi mdi-comment-edit-outline text-warning"></i></span>'.$result[$i]->paymentMethod ;
+            else
+                $col['paymentType'] = '<span class="ms-0 me-1"></span>'.$result[$i]->paymentMethod ;
             $col['Total'] = '€ ' . number_format((float) $result[$i]->total, 2, ".", ',');
      
             $row[$i] =  $col;
@@ -799,4 +883,5 @@ class Main extends BaseController
 
         return json_encode($data);
     }
+
 }

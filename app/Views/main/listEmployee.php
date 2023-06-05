@@ -159,8 +159,7 @@
                     dataType: "json",
 
                 }).done(function(jsonResponse) {
-                    console.log(jsonResponse)
-
+            
                     if (jsonResponse.error == 0) // SUCCESS
                     {
                         const Toast = Swal.mixin({

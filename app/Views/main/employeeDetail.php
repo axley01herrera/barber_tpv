@@ -1,13 +1,11 @@
 <div id="main-content" data-value="employeeDetail" class="container">
     <div class="row">
         <div class="col-12 mt-5">
-            <?php 
-                if($role == 1)
-                {
-                    echo view('main/component/btnControlPanel');
-                    echo view('main/component/btnListEmployee');
-                } 
-                else echo view('main/component/btnLogout');
+            <?php
+            if ($role == 1) {
+                echo view('main/component/btnControlPanel');
+                echo view('main/component/btnListEmployee');
+            } else echo view('main/component/btnLogout');
             ?>
         </div>
         <div class="col-12 col-lg-4 mt-5">
@@ -23,8 +21,10 @@
                     </div>
                 </div>
             </div>
-            <?php echo view('main/component/navTPV');?>
-            <!-- Z -->
+            <?php
+            if ($userLoggedID == $employee[0]->id)
+                echo view('main/component/navTPV');
+            ?>
             <div class="card">
                 <div class="card-body">
                     <h6 class="font-size-xs text-uppercase">Recaudación de Hoy</h6>
@@ -33,22 +33,36 @@
             </div>
         </div>
         <div class="col-12 col-lg-8 mt-5">
-            <div class="card ">
-                <div class="card-body">
-                    <h4 class="card-title mb-2"><i class="mdi mdi-clipboard-edit-outline"></i> Tickets</h4>
-                    <div class="table-responsive">
-                        <table id="dataTable" class="table" style="width: 100%;">
-                            <thead>
-                                <tr>
-                                    <th><strong>Fecha</strong></th>
-                                    <th hidden><strong>Ticket ID</strong></th>
-                                    <th hidden><strong>Nombre</strong></th>
-                                    <th hidden><strong>Apellido</strong></th>
-                                    <th><strong>Tipo de Cobro</strong></th>
-                                    <th class="text-end"><strong>Total</strong></th>
-                                </tr>
-                            </thead>
-                        </table>
+            <div class="row">
+                <div class="col-12">
+                    <div class="card ">
+                        <div class="card-body">
+                            <h4 class="card-title mb-2"><i class="mdi mdi-clipboard-edit-outline"></i> Tickets</h4>
+                            <div class="table-responsive">
+                                <table id="dataTable" class="table" style="width: 100%;">
+                                    <thead>
+                                        <tr>
+                                            <th><strong>Fecha</strong></th>
+                                            <th hidden><strong>Ticket ID</strong></th>
+                                            <th hidden><strong>Nombre</strong></th>
+                                            <th hidden><strong>Apellido</strong></th>
+                                            <th><strong>Tipo de Cobro</strong></th>
+                                            <th class="text-end"><strong>Total</strong></th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 class="font-size-xs text-uppercase">Recaudación Semanal</h6>
+                            <h4 class="mt-4 font-weight-bold mb-2 d-flex align-items-center"><?php echo '€ ' . number_format((float) $totalDayProduction, 2, ".", ','); ?></h4>
+                            <div class="text-muted">Acumulada por el empleado</div>
+                            <div id="chartWeek"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -109,5 +123,122 @@
         ],
     });
 
-    
+    dataTable.on('click', '.edit-payment-method', function(event) { // EDIT PAYMENTTYPE
+
+        $.ajax({
+
+            type: "post",
+            url: "<?php echo base_url('Main/showModalSelectPayMethod'); ?>",
+            data: {
+                'type': $(this).attr('data-pay-type'),
+                'action': 'update',
+                'basketID': $(this).attr('data-basket-id'),
+            },
+            dataType: "html",
+
+        }).done(function(htmlResponse) {
+
+            $('#main-modal').html(htmlResponse);
+
+        }).fail(function(error) {
+
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            });
+
+            Toast.fire({
+                icon: 'error',
+                title: 'Ha ocurrido un error'
+            });
+
+        });
+
+    });
+
+    var options2 = {
+        series: [{
+            name: 'Recaudación',
+            data: [
+                <?php echo $chartWeek['mon']; ?>,
+                <?php echo $chartWeek['tue']; ?>,
+                <?php echo $chartWeek['wed']; ?>,
+                <?php echo $chartWeek['thu']; ?>,
+                <?php echo $chartWeek['fri']; ?>,
+                <?php echo $chartWeek['sat']; ?>,
+                <?php echo $chartWeek['sun']; ?>
+            ],
+        }],
+        annotations: {
+            points: [{
+                x: 'Recaudación',
+                seriesIndex: 0,
+                label: {
+                    borderColor: '#775DD0',
+                    offsetY: 0,
+                    style: {
+                        color: '#fff',
+                        background: '#775DD0',
+                    },
+                    text: 'Mejor Recaudación',
+                }
+            }]
+        },
+        chart: {
+            height: 200,
+            type: 'bar',
+        },
+        plotOptions: {
+            bar: {
+                borderRadius: 0,
+                columnWidth: '15%',
+            }
+        },
+        dataLabels: {
+            enabled: false,
+        },
+        grid: {
+            row: {
+                colors: ['#fff', '#f2f2f2']
+            }
+        },
+        xaxis: {
+            labels: {
+                rotate: -45,
+            },
+            categories: ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'],
+        },
+        yaxis: {
+            title: {
+                text: '',
+            },
+            labels: {
+                formatter: (value) => {
+                    return '€ ' + value.toFixed(2);
+                },
+            },
+        },
+        fill: {
+            type: 'gradient',
+            gradient: {
+                shade: 'light',
+                type: "horizontal",
+                shadeIntensity: 0.25,
+                gradientToColors: undefined,
+                opacityFrom: 0.85,
+                opacityTo: 0.85,
+                stops: [50, 0, 100]
+            },
+        }
+    };
+
+    var chartWeek = new ApexCharts(document.querySelector("#chartWeek"), options2);
+    chartWeek.render();
 </script>

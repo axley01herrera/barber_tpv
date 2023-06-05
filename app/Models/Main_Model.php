@@ -230,7 +230,8 @@ class Main_Model extends Model
     public function getProducts()
     {
         $query = $this->db->table('product')
-            ->select('*');
+            ->select('*')
+            ->where('status', 1);
 
         return $query->get()->getResult();
     }
@@ -474,15 +475,18 @@ class Main_Model extends Model
         return $charData;
     }
 
-    public function getCpanelChartWeek()
+    public function getCpanelChartWeek($userID = '')
     {
         $firstDayOfWeek = date('Y-m-d', strtotime('monday this week')); // Get the first day of the week (Monday)
         $lastDayOfWeek = date('Y-m-d', strtotime('sunday this week')); // Get the last day of the week (Sunday) 
-        
+
         $query = $this->db->table('basket')
-        ->where('date >=', $firstDayOfWeek)
-        ->where('date <=', $lastDayOfWeek)
-        ->where('status', 2);
+            ->where('date >=', $firstDayOfWeek)
+            ->where('date <=', $lastDayOfWeek)
+            ->where('status', 2);
+            
+        if(!empty($userID)) 
+            $query->where('userID', $userID);
 
         $data = $query->get()->getResult();
         $countData = sizeof($data);
@@ -496,22 +500,65 @@ class Main_Model extends Model
         $serie['sun'] = 0;
         $serie['total'] = 0;
 
-        $firstDay = date('d-m-Y', strtotime($firstDayOfWeek)); 
-        $lastDay = date('d-m-Y', strtotime($lastDayOfWeek));
+        $firstDay = date('d-m-Y', strtotime($firstDayOfWeek));
 
-        for($i = 0; $i < $countData; $i++)
-        {
-            if($firstDay == $data[$i]->dateCalc) $serie['mon'] = $serie['mon'] + $data[$i]->total;
-            elseif(date('d-m-Y', strtotime($firstDay.'+1 day')) == $data[$i]->dateCalc) $serie['tue'] = $serie['tue'] + $data[$i]->total;
-            elseif(date('d-m-Y', strtotime($firstDay.'+2 day')) == $data[$i]->dateCalc) $serie['wed'] = $serie['wed'] + $data[$i]->total;
-            elseif(date('d-m-Y', strtotime($firstDay.'+3 day')) == $data[$i]->dateCalc) $serie['thu'] = $serie['thu'] + $data[$i]->total;
-            elseif(date('d-m-Y', strtotime($firstDay.'+4 day')) == $data[$i]->dateCalc) $serie['fri'] = $serie['fri'] + $data[$i]->total;
-            elseif(date('d-m-Y', strtotime($firstDay.'+5 day')) == $data[$i]->dateCalc) $serie['sat'] = $serie['sat'] + $data[$i]->total;
-            elseif(date('d-m-Y', strtotime($firstDay.'+6 day')) == $data[$i]->dateCalc) $serie['sun'] = $serie['sun'] + $data[$i]->total;
+        for ($i = 0; $i < $countData; $i++) {
+            if ($firstDay == $data[$i]->dateCalc) $serie['mon'] = $serie['mon'] + $data[$i]->total;
+            elseif (date('d-m-Y', strtotime($firstDay . '+1 day')) == $data[$i]->dateCalc) $serie['tue'] = $serie['tue'] + $data[$i]->total;
+            elseif (date('d-m-Y', strtotime($firstDay . '+2 day')) == $data[$i]->dateCalc) $serie['wed'] = $serie['wed'] + $data[$i]->total;
+            elseif (date('d-m-Y', strtotime($firstDay . '+3 day')) == $data[$i]->dateCalc) $serie['thu'] = $serie['thu'] + $data[$i]->total;
+            elseif (date('d-m-Y', strtotime($firstDay . '+4 day')) == $data[$i]->dateCalc) $serie['fri'] = $serie['fri'] + $data[$i]->total;
+            elseif (date('d-m-Y', strtotime($firstDay . '+5 day')) == $data[$i]->dateCalc) $serie['sat'] = $serie['sat'] + $data[$i]->total;
+            elseif (date('d-m-Y', strtotime($firstDay . '+6 day')) == $data[$i]->dateCalc) $serie['sun'] = $serie['sun'] + $data[$i]->total;
         }
-        
+
         $serie['total'] = $serie['total'] + $serie['mon'] + $serie['tue'] + $serie['wed'] + $serie['thu'] + $serie['fri'] + $serie['sat'] + $serie['sun'];
 
         return $serie;
+    }
+
+    public function getCpanelChartMont($year)
+    {
+        $firstDay = date('Y-m-d', strtotime("$year-01-01"));
+        $lastDay = date('Y-m-d', strtotime("$year-12-31"));
+
+        $query = $this->db->table('basket')
+            ->where('date >=', $firstDay)
+            ->where('date <=', $lastDay)
+            ->where('status', 2);
+
+        $data = $query->get()->getResult();
+        $countData = sizeof($data);
+        $total = 0;
+
+
+        for ($month = 1; $month <= 12; $month++) {
+
+            $serie[$month] = 0;
+            $mont = date("F", mktime(0, 0, 0, $month, 1, $year));
+            $daysInMonth = date("t", mktime(0, 0, 0, $month, 1, $year));
+
+            for ($day = 1; $day <= $daysInMonth; $day++) {
+
+                for($i = 0; $i < $countData; $i++)
+                {
+                    if(date('d-m-Y', strtotime($day.'-'.$mont.'-'.$year)) == $data[$i]->dateCalc)
+                        $serie[$month] = $serie[$month] + $data[$i]->total;
+                }
+            }
+            $total = $total + $serie[$month];
+        }
+        
+        $serie['total'] = $total;
+
+        return $serie;
+    }
+    
+    public function getBasket($id)
+    {
+        $query = $this->db->table('basket')
+            ->where('id', $id);
+
+        return $query->get()->getResult();
     }
 }

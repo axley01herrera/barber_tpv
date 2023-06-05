@@ -1,1 +1,1 @@
-<a href="<?php echo base_url('Authentication');?>" class="btn btn-sm btn-danger">Cerrear Sessión</a>
+<a href="<?php echo base_url('Authentication');?>" class="btn btn-sm btn-danger">Cerrar Sessión</a>
