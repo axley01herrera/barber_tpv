@@ -459,9 +459,26 @@ class Main extends BaseController
             $btn_editProduct = '<button class="ms-1 me-1 btn btn-sm btn-warning btn-editProduct" data-id="' . $result[$i]->id . '" href="#"><span class="mdi mdi-pencil" title="Editar Producto"></span></button>';
             $btn_deleteProduct = '<button class="ms-1 me-1 btn btn-sm btn-danger btn-delete-product" data-id="' . $result[$i]->id . '" href="#"><span class="mdi mdi-delete" title="Eliminar Producto"></span></button>';
 
+            $status = '';
+            $switch = '';
+
+            if ($result[$i]->status == 1) {
+                $status = '<span class="badge badge-soft-success">Activo</span>';
+                $switch = '<div style="margin-left: 44px;" class="form-check form-switch form-switch-md mb-2">
+                                                <input data-id="' . $result[$i]->id . '" data-status-product="' . $result[$i]->status . 'class="form-check-input switch" type="checkbox" id="flexSwitchCheckChecked" checked />
+                                            </div>';
+            } else {
+                $status = '<span class="badge badge-soft-danger">Inactivo</span>';
+                $switch = '<div style="margin-left: 44px;" class="form-check form-switch form-switch-md mb-2">
+                                                <input data-id="' . $result[$i]->id . '" data-status-product="' . $result[$i]->status . ' class="form-check-input switch" type="checkbox" id="flexSwitchCheckChecked" />
+                                            </div>';
+            }
+
             $col = array();
             $col['name'] = $result[$i]->name;
             $col['cost'] = '€ ' . number_format((float) $result[$i]->cost, 2, ".", ',');
+            $col['switch'] = $switch;
+            $col['status'] = $status;
             $col['action'] = $btn_editProduct . $btn_deleteProduct;
 
             $row[$i] =  $col;
@@ -505,6 +522,42 @@ class Main extends BaseController
         }
 
         return view('modals/products', $data);
+    }
+
+    public function changeProductStatus()
+    {
+        $response = array();
+
+        # VERIFY SESSION
+        if (empty($this->session->get('id'))) {
+            $response['error'] = 2;
+            $response['msg'] = 'Sessión Expirada';
+
+            return json_encode($response);
+        }
+
+        $data = array();
+        $data['status'] = $this->request->getPost('status');
+
+        $objModel = new Main_Model;
+        $result = $objModel->updateProduct($data, $this->request->getPost('productID'));
+
+        if ($result['error'] == 0) {
+            $msg = '';
+
+            if ($data['status'] == 0)
+                $msg = 'Producto Desactivado';
+            elseif ($data['status'] == 1)
+                $msg = 'Producto Activado';
+
+            $response['error'] = 0;
+            $response['msg'] = $msg;
+        } else {
+            $response['error'] = 1;
+            $response['msg'] = 'Ha ocurrido un error en el proceso';
+        }
+
+        return json_encode($response);
     }
 
     public function createProducts()

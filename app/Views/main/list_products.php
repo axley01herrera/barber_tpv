@@ -12,13 +12,15 @@
 <div class="card mt-5">
     <div class="card-body">
         <div class="table-responsive">
-            <table id="dataTable" class="table" style="width: 100%;">
+            <table id="dataTableProducts" class="table" style="width: 100%;">
                 <thead>
                     <tr>
                         <th>Nombre</th>
                         <th>Precio</th>
+                        <th>Desactivar / Activar</th>
                         <th></th>
                         <th></th>
+                        <th></th>       
                     </tr>
                 </thead>
             </table>
@@ -65,7 +67,7 @@
 
     });
 
-    var dataTable = $('#dataTable').DataTable({
+    var dataTable = $('#dataTableProducts').DataTable({
 
         destroy: true,
         processing: true,
@@ -94,16 +96,116 @@
             {
                 data: 'cost'
             },
+
+            {
+                data: 'actionStatus', orderable: false, searchable: false
+            },
+
+            {
+                data: 'status', orderable: false, searchable: false
+            },
+
             {
                 data: 'actionedit'
             },
+
             {
                 data: 'actiondelete'
             },
         ],
     });
 
-    dataTable.on('click', '.btn-editProduct', function (event) { // SET OR UPDATE CLAVE
+    dataTable.on('click', '.switch_active_inactive', function (event) { // ACTIVE OR INACTIVE PRODUCT
+
+        let status = $(this).attr('data-status-product');
+        let newStatus = '';
+        
+        if(status == 0){
+            newStatus = 1;
+        }
+        else if(status == 1){
+            newStatus = 0;
+        }
+        
+        $.ajax({
+
+            type: "post",
+            url: "<?php echo base_url('Main/changeProductStatus');?>",
+            data: {
+                'ProductID' : id,
+                'status' : newStatus
+            },
+            dataType: "json",
+            
+        }).done(function(jsonResponse) { console.log(jsonResponse)
+
+            if(jsonResponse.error == 0) // CASE SUCCESS
+            {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                });
+
+                Toast.fire({
+                    icon: 'success',
+                    title: jsonResponse.msg
+                });
+
+                dataTable.draw();
+            }
+            else // CASE ERROR
+            {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                })
+
+                Toast.fire({
+                    icon: 'error',
+                    title:  jsonResponse.msg
+                });
+            }
+
+            if(jsonResponse.error == 2) // SESSION EXPIRED
+                window.location.href = '<?php echo base_url('Authentication');?>'
+
+        }).fail(function(error) {
+
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            })
+
+            Toast.fire({
+                icon: 'error',
+                title: 'Ha ocurrido un error'
+            });
+
+        })
+    });
+
+    dataTable.on('click', '.btn-editProduct', function (event) { // EDIT PRODUCT
 
     event.preventDefault();
 
