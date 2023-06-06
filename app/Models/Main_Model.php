@@ -517,7 +517,7 @@ class Main_Model extends Model
         return $serie;
     }
 
-    public function getCpanelChartMont($year)
+    public function getCpanelChartMont($year, $userID = '')
     {
         $firstDay = date('Y-m-d', strtotime("$year-01-01"));
         $lastDay = date('Y-m-d', strtotime("$year-12-31"));
@@ -526,6 +526,9 @@ class Main_Model extends Model
             ->where('date >=', $firstDay)
             ->where('date <=', $lastDay)
             ->where('status', 2);
+
+        if(!empty($userID)) 
+            $query->where('userID', $userID);
 
         $data = $query->get()->getResult();
         $countData = sizeof($data);

@@ -25,22 +25,23 @@ class Main extends BaseController
         }
 
         $objModel = new Main_Model;
+        $data = array();
+
+        if(!empty($this->request->getPostGet('year')))
+            $year = $this->request->getPostGet('year');
+        else
+            $year = date('Y');
+
+        $data['year'] = $year;
+        $data['currentYear'] = date('Y');
 
         if ($this->session->get('role') == 1) // ADMIN
         {
-            if(!empty($this->request->getPostGet('year')))
-                $year = $this->request->getPostGet('year');
-            else
-                $year = date('Y');
-
-            $data = array();
             $data['role'] = $this->session->get('role');
             $data['totalDayProduction'] = $objModel->getTotalDayProduction();
             $data['charData'] = $objModel->getCpanelChartEmployees();
             $data['chartWeek'] = $objModel->getCpanelChartWeek();
             $data['chartMont'] = $objModel->getCpanelChartMont($year);
-            $data['year'] = $year;
-            $data['currentYear'] = date('Y');
             $data['page'] = 'main/cPanel';
 
             return view('main/index', $data);
@@ -49,13 +50,12 @@ class Main extends BaseController
         {
             $userID = (int) $this->session->get('id');
             $employee = $objModel->getUserData($userID);
-
-            $data = array();
             $data['role'] = $this->session->get('role');
             $data['employee'] = $employee;
             $data['page'] = 'main/employeeDetail';
             $data['totalDayProduction'] = $objModel->getTotalDayProduction($userID);
             $data['chartWeek'] = $objModel->getCpanelChartWeek($userID);
+            $data['chartMont'] = $objModel->getCpanelChartMont($year, $userID);
             $data['userLoggedID'] = (int) $this->session->get('id');
 
             return view('main/index', $data);
@@ -177,13 +177,21 @@ class Main extends BaseController
             return view('main/index', $data);
         }
 
+        if(!empty($this->request->getPostGet('year')))
+            $year = $this->request->getPostGet('year');
+        else
+            $year = date('Y');
+
+        $data = array();
+        $data['year'] = $year;
+        $data['currentYear'] = date('Y');
+
         $userLoggedID = (int) $this->session->get('id');
         $userID = (int) $this->request->uri->getSegment(3);
 
         if($this->session->get('role') == 2)
         {
             if ($userLoggedID != $userID) {
-                $data = array();
                 $data['page'] = 'main/logout';
                 $data['msg'] = 'Sessión Expirada';
     
@@ -194,13 +202,12 @@ class Main extends BaseController
         $objModel = new Main_Model;
         $employee = $objModel->getUserData($userID);
 
-        $data = array();
         $data['role'] = $this->session->get('role');
         $data['employee'] = $employee;
         $data['totalDayProduction'] = $objModel->getTotalDayProduction($userID);
         $data['chartWeek'] = $objModel->getCpanelChartWeek($userID);
         $data['userLoggedID'] = (int) $this->session->get('id');
-
+        $data['chartMont'] = $objModel->getCpanelChartMont($year, $userID);
         $data['page'] = 'main/employeeDetail';
 
         return view('main/index', $data);

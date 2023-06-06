@@ -59,9 +59,20 @@
                     <div class="card">
                         <div class="card-body">
                             <h6 class="font-size-xs text-uppercase">Recaudación Semanal</h6>
-                            <h4 class="mt-4 font-weight-bold mb-2 d-flex align-items-center"><?php echo '€ ' . number_format((float) $totalDayProduction, 2, ".", ','); ?></h4>
+                            <h4 class="mt-4 font-weight-bold mb-2 d-flex align-items-center"><?php echo '€ ' . number_format((float) $chartWeek['total'], 2, ".", ','); ?></h4>
                             <div class="text-muted">Acumulada por el empleado</div>
                             <div id="chartWeek"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 class="font-size-xs text-uppercase">Recaudación Mensual</h6>
+                            <h4 class="mt-4 font-weight-bold mb-2 d-flex align-items-center"><?php echo '€ ' . number_format((float) $chartMont['total'], 2, ".", ','); ?></h4>
+                            <div class="text-muted">Acumulada por el empleado</div>
+                            <div id="chart3"></div>
+                            
                         </div>
                     </div>
                 </div>
@@ -241,4 +252,89 @@
 
     var chartWeek = new ApexCharts(document.querySelector("#chartWeek"), options2);
     chartWeek.render();
+
+    var options3 = {
+        series: [{
+            name: 'Recaudación',
+            data: [
+                <?php echo $chartMont[1]; ?>,
+                <?php echo $chartMont[2]; ?>,
+                <?php echo $chartMont[3]; ?>,
+                <?php echo $chartMont[4]; ?>,
+                <?php echo $chartMont[5]; ?>,
+                <?php echo $chartMont[6]; ?>,
+                <?php echo $chartMont[7]; ?>,
+                <?php echo $chartMont[8]; ?>,
+                <?php echo $chartMont[9]; ?>,
+                <?php echo $chartMont[10]; ?>,
+                <?php echo $chartMont[11]; ?>,
+                <?php echo $chartMont[12]; ?>
+            ],
+        }],
+        annotations: {
+            points: [{
+                x: 'Recaudación',
+                seriesIndex: 0,
+                label: {
+                    borderColor: '#775DD0',
+                    offsetY: 0,
+                    style: {
+                        color: '#fff',
+                        background: '#775DD0',
+                    },
+                    text: 'Mejor Recaudación',
+                }
+            }]
+        },
+        chart: {
+            height: 200,
+            type: 'bar',
+        },
+        plotOptions: {
+            bar: {
+                borderRadius: 0,
+                columnWidth: '15%',
+            }
+        },
+        dataLabels: {
+            enabled: false,
+        },
+        grid: {
+            row: {
+                colors: ['#fff', '#f2f2f2']
+            }
+        },
+        xaxis: {
+            labels: {
+                rotate: -45,
+            },
+            categories: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+        },
+        yaxis: {
+            title: {
+                text: '',
+            },
+            labels: {
+                formatter: (value) => {
+                    return '€ ' + value.toFixed(2);
+                },
+            },
+        },
+        fill: {
+            type: 'gradient',
+            gradient: {
+                shade: 'light',
+                type: "horizontal",
+                shadeIntensity: 0.25,
+                gradientToColors: undefined,
+                opacityFrom: 0.85,
+                opacityTo: 0.85,
+                stops: [50, 0, 100]
+            },
+        }
+    };
+
+    var chart3 = new ApexCharts(document.querySelector("#chart3"), options3);
+    chart3.render();
+
 </script>
