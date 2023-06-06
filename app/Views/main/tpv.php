@@ -10,12 +10,12 @@
     }
 
     .scrollable-div {
-        height: 600px;
+        height: 400px;
         overflow-y: scroll;
     }
 
     .scrollable-div-basket {
-        height: 500px;
+        height: 400px;
         overflow-y: scroll;
     }
 </style>
@@ -27,13 +27,6 @@
                 TPV
             </h1>
         </div>
-        <!-- 
-        <div class="col-12">
-            <?php
-            //if ($userRole == 1)
-                //echo view('main/component/btnControlPanel');
-            ?>
-        </div>-->
     </div>
 
     <div class="row">

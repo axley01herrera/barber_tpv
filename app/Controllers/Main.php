@@ -148,7 +148,7 @@ class Main extends BaseController
             $col['role'] = $role;
             $col['status'] = $status;
             $col['switch'] = $switch;
-            $col['action'] = $clave . $btn_edit . $btn_delete;
+            $col['action'] = $clave . $btn_edit;
 
             $row[$i] =  $col;
         }
@@ -501,7 +501,7 @@ class Main extends BaseController
             $col['cost'] = '€ ' . number_format((float) $result[$i]->cost, 2, ".", ',');
             $col['status'] = $status;
             $col['switch'] = $switch;
-            $col['action'] = $btn_editProduct . $btn_deleteProduct;
+            $col['action'] = $btn_editProduct;
 
             $row[$i] =  $col;
         }
@@ -844,7 +844,6 @@ class Main extends BaseController
 
         $dataTableRequest = $_REQUEST;
 
-
         if(!empty($this->request->getPost('userID')))
             $userID = $this->request->getPost('userID');
 
@@ -880,7 +879,7 @@ class Main extends BaseController
         }
 
         if ($totalRows > 0)
-            $totalRecords = $objModel->getTotalBasketDT();
+            $totalRecords = $objModel->getTotalBasketDT($userID);
 
         $data = array();
         $data['draw'] = $dataTableRequest['draw'];

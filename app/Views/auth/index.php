@@ -19,6 +19,22 @@
     <link href="<?php echo base_url('assets/css/app.min.css'); ?>" id="app-style" rel="stylesheet" type="text/css" />
     <link href="<?php echo base_url('assets/libs/sweetalert/sweetalert2.css'); ?>" id="app-style" rel="stylesheet" type="text/css" />
 
+    <style>
+        .form-control {
+            display: block;
+            width: 100%;
+            padding: .47rem .75rem;
+            font-size: .9rem;
+            font-weight: 400;
+            line-height: 1.5;
+            color: #495057;
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid #495057;
+         
+        }
+    </style>
+
     <!-- JAVASCRIPT -->
     <script src="<?php echo base_url('assets/libs/bootstrap/js/bootstrap.bundle.min.js'); ?>"></script>
     <script src="<?php echo base_url('assets/libs/metismenujs/metismenujs.min.js'); ?>"></script>
@@ -78,6 +94,7 @@
     <?php echo view('global/form_validation'); ?>
 
     <script>
+        $('#txt-email').focus();
         $('#btn-login').on('click', function() {
 
             let resultCheckRequiredValues = checkRequiredValues('required');

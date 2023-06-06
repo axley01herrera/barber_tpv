@@ -10,10 +10,10 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-6 text-center">
-                        <input id="radio-e" type="radio" class="radio-payType" name="radio-payType" value="1" /> Efectivo
+                        <input id="radio-e" type="radio" class="radio-payType" name="radio-payType" value="1" /> <label for="radio-e">Efectivo</label> 
                     </div>
                     <div class="col-6 text-center">
-                        <input id="radio-t" type="radio" class="radio-payType" name="radio-payType" value="2" /> Tarjeta
+                        <input id="radio-t" type="radio" class="radio-payType" name="radio-payType" value="2" /> <label for="radio-t">Tarjeta</label> 
                     </div>
 
                 </div>
