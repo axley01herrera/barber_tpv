@@ -72,7 +72,7 @@
                             <h4 class="mt-4 font-weight-bold mb-2 d-flex align-items-center"><?php echo '€ ' . number_format((float) $chartMont['total'], 2, ".", ','); ?></h4>
                             <div class="text-muted">Acumulada por el empleado</div>
                             <div id="chart3"></div>
-                            
+
                         </div>
                     </div>
                 </div>
@@ -336,5 +336,4 @@
 
     var chart3 = new ApexCharts(document.querySelector("#chart3"), options3);
     chart3.render();
-
 </script>
