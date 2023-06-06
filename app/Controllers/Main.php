@@ -56,6 +56,7 @@ class Main extends BaseController
             $data['page'] = 'main/employeeDetail';
             $data['totalDayProduction'] = $objModel->getTotalDayProduction($userID);
             $data['chartWeek'] = $objModel->getCpanelChartWeek($userID);
+            $data['chartMont'] = $objModel->getCpanelChartMont($userID);            
             $data['userLoggedID'] = (int) $this->session->get('id');
 
             return view('main/index', $data);
@@ -199,6 +200,7 @@ class Main extends BaseController
         $data['employee'] = $employee;
         $data['totalDayProduction'] = $objModel->getTotalDayProduction($userID);
         $data['chartWeek'] = $objModel->getCpanelChartWeek($userID);
+        $data['chartMont'] = $objModel->getCpanelChartMont($userID);
         $data['userLoggedID'] = (int) $this->session->get('id');
 
         $data['page'] = 'main/employeeDetail';
