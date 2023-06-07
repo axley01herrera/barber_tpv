@@ -110,12 +110,12 @@ class Main extends BaseController
             $switch = '';
 
             if ($result[$i]->status == 1) {
-                $status = '<span class="badge badge-soft-success">Activo</span>';
+                $status = '<span class="badge bg-success">Activo</span>';
                 $switch = '<div style="margin-left: 44px;" class="form-check form-switch form-switch-md mb-2">
                                                 <input data-id="' . $result[$i]->id . '" data-status="' . $result[$i]->status . '" data-role="' . $result[$i]->role . '"class="form-check-input switch" type="checkbox" id="flexSwitchCheckChecked" checked />
                                             </div>';
             } else {
-                $status = '<span class="badge badge-soft-danger">Inactivo</span>';
+                $status = '<span class="badge bg-danger">Inactivo</span>';
                 $switch = '<div style="margin-left: 44px;" class="form-check form-switch form-switch-md mb-2">
                                                 <input data-id="' . $result[$i]->id . '" data-status="' . $result[$i]->status . '" data-role="' . $result[$i]->role . '"class="form-check-input switch" type="checkbox" id="flexSwitchCheckChecked" />
                                             </div>';
@@ -124,9 +124,9 @@ class Main extends BaseController
             $role = '';
 
             if ($result[$i]->role == 1) {
-                $role = '<span class="badge badge-soft-primary">Administrador</span>';
+                $role = '<span class="badge bg-primary">Administrador</span>';
             } else {
-                $role = '<span class="badge badge-soft-secondary">Empleado</span>';
+                $role = '<span class="badge bg-secondary">Empleado</span>';
             }
 
             $clave = '';
@@ -480,12 +480,12 @@ class Main extends BaseController
             $switch = '';
 
             if ($result[$i]->status == 1) {
-                $status = '<span class="badge badge-soft-success">Activo</span>';
+                $status = '<span class="badge bg-success">Activo</span>';
                 $switch = '<div style="margin-left: 44px;" class="form-check form-switch form-switch-md mb-2">
                                                 <input data-id="' . $result[$i]->id . '" data-status="' . $result[$i]->status . '" class="form-check-input switch" type="checkbox" id="flexSwitchCheckChecked" checked />
                                             </div>';
             } else {
-                $status = '<span class="badge badge-soft-danger">Inactivo</span>';
+                $status = '<span class="badge bg-danger">Inactivo</span>';
                 $switch = '<div style="margin-left: 44px;" class="form-check form-switch form-switch-md mb-2">
                                                 <input data-id="' . $result[$i]->id . '" data-status="' . $result[$i]->status . '" class="form-check-input switch" type="checkbox" id="flexSwitchCheckChecked" />
                                             </div>';

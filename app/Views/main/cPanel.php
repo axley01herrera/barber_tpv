@@ -18,8 +18,8 @@
             <h6 class="font-size-xs text-uppercase">Producción 
                 <?php
                     setlocale(LC_TIME, 'es_VE.UTF-8','esp'); // Establece la configuración regional en español
-                    $fechaActual = strftime('%A %e de %B del %Y'); // Obtiene la fecha actual formateada en español
-                    echo $fechaActual; // Muestra: martes 6 de junio del 2023
+                    $fechaActual = strftime('%e de %B del %Y'); // Obtiene la fecha actual formateada en español
+                    echo $fechaActual;
                 ?>
             </h6>
             <div class="row">

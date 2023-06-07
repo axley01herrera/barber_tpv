@@ -32,15 +32,10 @@
         }
 
         .form-control {
-            display: block;
-            width: 100%;
-            padding: .47rem .75rem;
-            font-size: .9rem;
-            font-weight: 400;
-            line-height: 1.5;
-            color: #495057;
-            background-color: #fff;
-            background-clip: padding-box;
+            border: 1px solid #495057;
+        }
+
+        .form-select {
             border: 1px solid #495057;
         }
 
