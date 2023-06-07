@@ -582,4 +582,26 @@ class Main_Model extends Model
 
         return $query->get()->getResult();
     }
+
+    public function getPrintTicketData($basketID)
+    {
+        $query = $this->db->table('basketproduct')
+        ->where('basketID', $basketID);
+
+        $basketproduct = $query->get()->getResult(); 
+        $countBasketproduct = sizeof($basketproduct);
+
+        $productIds = array();
+        for($i = 0; $i < $countBasketproduct; $i++)
+        {
+            $productIds[] = $basketproduct[$i]->productID;
+        }
+
+        $newQuery = $this->db->table('product')
+        ->whereIn('id', $productIds);
+
+        $products = $newQuery->get()->getResult();
+
+        return $products;
+    }
 }

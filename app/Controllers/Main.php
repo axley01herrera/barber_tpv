@@ -27,7 +27,7 @@ class Main extends BaseController
         $objModel = new Main_Model;
         $data = array();
 
-        if(!empty($this->request->getPostGet('year')))
+        if (!empty($this->request->getPostGet('year')))
             $year = $this->request->getPostGet('year');
         else
             $year = date('Y');
@@ -45,8 +45,7 @@ class Main extends BaseController
             $data['page'] = 'main/cPanel';
 
             return view('main/index', $data);
-        }
-        elseif($this->session->get('role') == 2) // EMPLOYEE
+        } elseif ($this->session->get('role') == 2) // EMPLOYEE
         {
             $userID = (int) $this->session->get('id');
             $employee = $objModel->getUserData($userID);
@@ -177,7 +176,7 @@ class Main extends BaseController
             return view('main/index', $data);
         }
 
-        if(!empty($this->request->getPostGet('year')))
+        if (!empty($this->request->getPostGet('year')))
             $year = $this->request->getPostGet('year');
         else
             $year = date('Y');
@@ -189,12 +188,11 @@ class Main extends BaseController
         $userLoggedID = (int) $this->session->get('id');
         $userID = (int) $this->request->uri->getSegment(3);
 
-        if($this->session->get('role') == 2)
-        {
+        if ($this->session->get('role') == 2) {
             if ($userLoggedID != $userID) {
                 $data['page'] = 'main/logout';
                 $data['msg'] = 'Sessión Expirada';
-    
+
                 return view('main/index', $data);
             }
         }
@@ -706,7 +704,7 @@ class Main extends BaseController
         $dataBasket = array();
         $dataBasket['userID'] = $this->session->get('id');
         $dataBasket['dateCalc'] = $today;
-        
+
         $objModel = new Main_Model;
         $result_create_basket = $objModel->createBasket($dataBasket);
 
@@ -792,16 +790,15 @@ class Main extends BaseController
             return view('main/index', $data);
         }
 
-        
+
         $data = array();
         $data['basketID'] = $this->request->getPost('basketID');
         $data['action'] = $this->request->getPost('action');
-        
-        if($data['action'] == 'create')
+
+        if ($data['action'] == 'create')
             $data['total'] = $this->request->getPost('total');
-           
-        if($data['action'] == 'update')
-        {
+
+        if ($data['action'] == 'update') {
             $objModel = new Main_Model;
             $result =  $objModel->getBasket($data['basketID']);
 
@@ -811,7 +808,7 @@ class Main extends BaseController
 
         $data['title'] = 'Seleccione un método de pago';
         $data['userID'] = $this->session->get('id');
-            
+
         return view('modals/selectPaymentMethod', $data);
     }
 
@@ -844,7 +841,7 @@ class Main extends BaseController
 
         $dataTableRequest = $_REQUEST;
 
-        if(!empty($this->request->getPost('userID')))
+        if (!empty($this->request->getPost('userID')))
             $userID = $this->request->getPost('userID');
 
         $params = array();
@@ -864,17 +861,20 @@ class Main extends BaseController
 
         for ($i = 0; $i < $totalRows; $i++) {
 
+            $print = '<button class="ms-1 me-1 btn btn-sm btn-warning btn-print" data-id="' . $result[$i]->basketID . '"><span class="mdi mdi-printer" title="Imprimir Ticket"></span></button>';
+
             $col = array();
             $col['date'] = $result[$i]->formattedDate;
             $col['ticketID'] = $result[$i]->basketID;
             $col['userName'] = $result[$i]->userName;
             $col['userlastName'] = $result[$i]->userLastName;
-            if($this->session->get('id') == $result[$i]->userID)
-                $col['paymentType'] = '<span class="ms-0 me-1"><i data-pay-type="'.$result[$i]->payType.'" data-basket-id="'.$result[$i]->basketID.'" style="cursor: pointer;" class="edit-payment-method mdi mdi-comment-edit-outline text-warning"></i></span>'.$result[$i]->paymentMethod ;
+            if ($this->session->get('id') == $result[$i]->userID)
+                $col['paymentType'] = '<span class="ms-0 me-1"><i data-pay-type="' . $result[$i]->payType . '" data-basket-id="' . $result[$i]->basketID . '" style="cursor: pointer;" class="edit-payment-method mdi mdi-comment-edit-outline text-warning"></i></span>' . $result[$i]->paymentMethod;
             else
-                $col['paymentType'] = '<span class="ms-0 me-1"></span>'.$result[$i]->paymentMethod ;
-            $col['Total'] = '€ ' . number_format((float) $result[$i]->total, 2, ".", ',');
-     
+                $col['paymentType'] = '<span class="ms-0 me-1"></span>' . $result[$i]->paymentMethod;
+            $col['total'] = '€ ' . number_format((float) $result[$i]->total, 2, ".", ',');
+            $col['print'] = $print ;
+
             $row[$i] =  $col;
         }
 
@@ -888,6 +888,19 @@ class Main extends BaseController
         $data['data'] = $row;
 
         return json_encode($data);
+    }
+
+    public function printTicket()
+    {
+        $id = $this->request->getPost('id');
+
+        $objModel = new Main_Model;
+        $result = $objModel->getPrintTicketData($id);
+
+        $data = array();
+        $data['ticket'] = $result;
+        
+        return view('main/printTicket', $data);
     }
 
 }

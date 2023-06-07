@@ -70,6 +70,7 @@
                                             <th hidden><strong>Apellido</strong></th>
                                             <th><strong>Tipo de Cobro</strong></th>
                                             <th class="text-end"><strong>Total</strong></th>
+                                            <th class="text-end"></th>
                                         </tr>
                                     </thead>
                                 </table>
@@ -150,8 +151,16 @@
                 data: 'paymentType',
             },
             {
-                data: 'Total',
-                class: 'text-end'
+                data: 'total',
+                class: 'text-end',
+                searchable: false,
+                orderable: false
+            },
+            {
+                data: 'print',
+                class: 'text-end',
+                searchable: false,
+                orderable: false
             }
         ],
     });
@@ -358,4 +367,20 @@
 
     var chart3 = new ApexCharts(document.querySelector("#chart3"), options3);
     chart3.render();
+
+    dataTable.on('click', '.btn-print', function(event) {
+     
+        $.ajax({
+
+            type: "post",
+            url: "<?php echo base_url('Main/printTicket');?>",
+            data: {
+                'id': $(this).attr('data-id')
+            },
+            dataType: "html",
+            success: function (response) {
+                $('#main-content').html(response);
+            }
+        });
+    });
 </script>
