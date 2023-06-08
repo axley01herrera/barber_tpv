@@ -59,7 +59,15 @@
                             </div>
                             <div>
                                 <div class="form-floating form-floating-custom mb-3">
-                                    <input type="text" class="form-control required focus email" id="txt-email" placeholder="Email">
+                                    <select id="txt-email" class="form-select required focus">
+                                        <option hidden value="">Seleccione su usuario</option>
+                                        <?php
+                                            $count = sizeof($users);
+                                            for($i = 0; $i < $count; $i++) {
+                                        ?>
+                                            <option value="<?php echo $users[$i]->email;?>"><?php echo $users[$i]->email;?></option>
+                                        <?php }?>
+                                    </select>
                                     <label for="txt-email">Email</label>
                                     <div class="form-floating-icon">
                                         <i class="uil uil-envelope-alt"></i>
@@ -91,6 +99,7 @@
             </div>
         </div>
     </div>
+    <?php echo var_dump($users);?>
     <?php echo view('global/form_validation'); ?>
 
     <script>

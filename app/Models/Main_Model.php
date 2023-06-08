@@ -16,6 +16,12 @@ class Main_Model extends Model
         $this->db = \Config\Database::connect();
     }
 
+    public function getUsers()
+    {
+        $query = $this->db->table('user');
+        return $query->get()->getResult();
+    }
+
     public function verifyCredentials($email, $clave)
     {
         $query = $this->db->table('user')
