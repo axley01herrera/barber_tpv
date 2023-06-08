@@ -18,7 +18,7 @@ class Main_Model extends Model
 
     public function getUsers()
     {
-        $query = $this->db->table('user');
+        $query = $this->db->table('user')->where('status', 1);
         return $query->get()->getResult();
     }
 

@@ -31,7 +31,7 @@
             background-color: #fff;
             background-clip: padding-box;
             border: 1px solid #495057;
-         
+
         }
     </style>
 
@@ -62,11 +62,11 @@
                                     <select id="txt-email" class="form-select required focus">
                                         <option hidden value="">Seleccione su usuario</option>
                                         <?php
-                                            $count = sizeof($users);
-                                            for($i = 0; $i < $count; $i++) {
+                                        $count = sizeof($users);
+                                        for ($i = 0; $i < $count; $i++) {
                                         ?>
-                                            <option value="<?php echo $users[$i]->email;?>"><?php echo $users[$i]->email;?></option>
-                                        <?php }?>
+                                            <option value="<?php echo $users[$i]->email; ?>"><?php echo $users[$i]->email; ?></option>
+                                        <?php } ?>
                                     </select>
                                     <label for="txt-email">Email</label>
                                     <div class="form-floating-icon">
@@ -99,9 +99,7 @@
             </div>
         </div>
     </div>
-    <?php echo var_dump($users);?>
     <?php echo view('global/form_validation'); ?>
-
     <script>
         $('#txt-email').focus();
         $('#btn-login').on('click', function() {
