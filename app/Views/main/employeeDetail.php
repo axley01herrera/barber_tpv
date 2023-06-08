@@ -25,37 +25,39 @@
             if ($userLoggedID == $employee[0]->id)
                 echo view('main/component/navTPV');
             ?>
-            <div class="card mt-3">
-                <div class="card-body">
-                    <h6 class="font-size-xs text-uppercase">Producción
-                        <?php
-                        setlocale(LC_TIME, 'es_VE.UTF-8', 'esp'); // Establece la configuración regional en español
-                        $fechaActual = strftime('%e de %B del %Y'); // Obtiene la fecha actual formateada en español
-                        echo $fechaActual; // Muestra: martes 6 de junio del 2023
-                        ?>
-                    </h6>
-                    <div class="row">
-                        <div class="col-12 col-lg-4 mt-3 text-center">
-                            <h4 class="font-weight-bold d-flex align-items-center text-center">
-                                Efectivo <?php echo '€ ' . number_format((float) $totalDayProduction['cash'], 2, ".", ','); ?>
-                            </h4>
-                        </div>
-                        <div class="col-12 col-lg-4 mt-3 text-center">
-                            <h4 class="font-weight-bold d-flex align-items-center text-center">
-                                Tarjeta <?php echo '€ ' . number_format((float) $totalDayProduction['card'], 2, ".", ','); ?>
-                            </h4>
-                        </div>
-                        <div class="col-12 col-lg-4 mt-3 text-center">
-                            <h4 class="font-weight-bold d-flex align-items-center text-center">
-                                Total <?php echo '€ ' . number_format((float) $totalDayProduction['all'], 2, ".", ','); ?>
-                            </h4>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
         <div class="col-12 col-lg-8 mt-5">
             <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 class="font-size-xs text-uppercase">Producción
+                                <?php
+                                setlocale(LC_TIME, 'es_VE.UTF-8', 'esp'); // Establece la configuración regional en español
+                                $fechaActual = strftime('%e de %B del %Y'); // Obtiene la fecha actual formateada en español
+                                echo $fechaActual; // Muestra: martes 6 de junio del 2023
+                                ?>
+                            </h6>
+                            <div class="row">
+                                <div class="col-12 col-lg-4 mt-3 text-center">
+                                    <h4 class="font-weight-bold d-flex align-items-center text-center">
+                                        Efectivo <?php echo '€ ' . number_format((float) $totalDayProduction['cash'], 2, ".", ','); ?>
+                                    </h4>
+                                </div>
+                                <div class="col-12 col-lg-4 mt-3 text-center">
+                                    <h4 class="font-weight-bold d-flex align-items-center text-center">
+                                        Tarjeta <?php echo '€ ' . number_format((float) $totalDayProduction['card'], 2, ".", ','); ?>
+                                    </h4>
+                                </div>
+                                <div class="col-12 col-lg-4 mt-3 text-center">
+                                    <h4 class="font-weight-bold d-flex align-items-center text-center">
+                                        Total <?php echo '€ ' . number_format((float) $totalDayProduction['all'], 2, ".", ','); ?>
+                                    </h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="col-12">
                     <div class="card ">
                         <div class="card-body">
@@ -105,6 +107,7 @@
 </div>
 
 <script>
+
     var dataTable = $('#dataTable').DataTable({
 
         destroy: true,
@@ -383,4 +386,5 @@
             }
         });
     });
+
 </script>

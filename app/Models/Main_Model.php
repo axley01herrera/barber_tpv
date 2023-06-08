@@ -592,28 +592,42 @@ class Main_Model extends Model
     public function getPrintTicketData($basketID)
     {
         $return = array();
-        $query = $this->db->table('basketproduct')
-        ->where('basketID', $basketID); 
+        $queryBasket_dt = $this->db->table('basket_dt')
+        ->where('basketID', $basketID)
+        ->get()
+        ->getResult();
 
-        $basketproduct = $query->get()->getResult();  
-        $countBasketproduct = sizeof($basketproduct);
+        $user = $queryBasket_dt[0]->userName.' '.$queryBasket_dt[0]->userLastName;
+        $payType = $queryBasket_dt[0]->paymentMethod;
 
-        $basket = $this->getBasket($basketproduct['0']->basketID);
-        if($basket[0]->payType == 1) $payType = 'Efectivo'; else $payType = 'Tarjeta';
-        $user = $this->getUserData($basket[0]->userID);
-
-        $productIds = array();
-        for($i = 0; $i < $countBasketproduct; $i++)
-        {
-            $productIds[] = $basketproduct[$i]->productID;
-        }
-
-        $newQuery = $this->db->table('product')
-        ->whereIn('id', $productIds);
-
-        $return['products'] = $newQuery->get()->getResult();
         $return['user'] = $user;
         $return['payType'] = $payType;
+
+        $queryBasketProduct = $this->db->table('basketproduct')
+        ->select('productID')
+        ->where('basketID', $basketID)
+        ->get()
+        ->getResult();
+
+        $countQueryBasketProduct = sizeof($queryBasketProduct);
+        $product = array();
+        $total = 0;
+
+        for($i = 0; $i < $countQueryBasketProduct; $i++)
+        {
+            $result = $this->getProductData($queryBasketProduct[$i]->productID);
+
+            $record = array();
+            $record['name'] = $result[0]->name;
+            $record['cost'] = $result[0]->cost;
+
+            $total = $total + $result[0]->cost;
+
+            $product[$i] = $record;
+        }
+
+        $return['product'] = $product;
+        $return['total'] = $total;
 
         return $return;
     }
