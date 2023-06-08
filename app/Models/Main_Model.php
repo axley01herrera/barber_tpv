@@ -591,11 +591,16 @@ class Main_Model extends Model
 
     public function getPrintTicketData($basketID)
     {
+        $return = array();
         $query = $this->db->table('basketproduct')
-        ->where('basketID', $basketID);
+        ->where('basketID', $basketID); 
 
-        $basketproduct = $query->get()->getResult(); 
+        $basketproduct = $query->get()->getResult();  
         $countBasketproduct = sizeof($basketproduct);
+
+        $basket = $this->getBasket($basketproduct['0']->basketID);
+        if($basket[0]->payType == 1) $payType = 'Efectivo'; else $payType = 'Tarjeta';
+        $user = $this->getUserData($basket[0]->userID);
 
         $productIds = array();
         for($i = 0; $i < $countBasketproduct; $i++)
@@ -606,8 +611,10 @@ class Main_Model extends Model
         $newQuery = $this->db->table('product')
         ->whereIn('id', $productIds);
 
-        $products = $newQuery->get()->getResult();
+        $return['products'] = $newQuery->get()->getResult();
+        $return['user'] = $user;
+        $return['payType'] = $payType;
 
-        return $products;
+        return $return;
     }
 }
