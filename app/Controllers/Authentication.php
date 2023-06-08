@@ -18,7 +18,11 @@ class Authentication extends BaseController
 
     public function index() 
     {
-        return view('auth/index');
+        $objModel = new Main_Model;
+        $result = $objModel->getUsers();
+        $data['users'] = $result;
+
+        return view('auth/index', $data);
     }
 
     public function login()

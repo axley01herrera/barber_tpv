@@ -16,6 +16,12 @@ class Main_Model extends Model
         $this->db = \Config\Database::connect();
     }
 
+    public function getUsers()
+    {
+        $query = $this->db->table('user')->where('status', 1);
+        return $query->get()->getResult();
+    }
+
     public function verifyCredentials($email, $clave)
     {
         $query = $this->db->table('user')
@@ -421,11 +427,19 @@ class Main_Model extends Model
         return $sort;
     }
 
-    public function getTotalBasketDT()
+    public function getTotalBasketDT($id = '')
     {
-        $query = $this->db->table('basket_dt')
-            ->selectCount('basketID')
-            ->get()->getResult();
+        if(empty($id)) {
+
+            $query = $this->db->table('basket_dt')
+                ->selectCount('basketID')
+                ->get()->getResult();
+        } else {
+            $query = $this->db->table('basket_dt')
+                ->selectCount('basketID')
+                ->where('userID', $id)
+                ->get()->getResult();
+        }
 
         return $query[0]->basketID;
     }
@@ -443,10 +457,20 @@ class Main_Model extends Model
 
         $data = $query->get()->getResult();
         $countData = sizeof($data);
-        $total = 0;
+
+        $total = array();
+        $total['cash'] = 0;
+        $total['card'] = 0;
+        $total['all'] = 0;
 
         for ($i = 0; $i < $countData; $i++) {
-            $total = (float) $total + (float) $data[$i]->total;
+
+            $total['all'] = (float) $total['all'] + (float) $data[$i]->total;
+
+            if ($data[$i]->payType == 1)
+                $total['cash'] = (float) $total['cash'] + (float) $data[$i]->total;
+            elseif ($data[$i]->payType == 2)
+                $total['card'] = (float) $total['card'] + (float) $data[$i]->total;
         }
 
         return $total;
@@ -466,7 +490,8 @@ class Main_Model extends Model
 
         for ($i = 0; $i < $countData; $i++) {
             $cat[$i] = $data[$i]->name;
-            $serie[$i] = $this->getTotalDayProduction($data[$i]->id);
+            $result = $this->getTotalDayProduction($data[$i]->id);
+            $serie[$i] = $result['all'];
         }
 
         $charData['cat'] = $cat;
@@ -484,8 +509,8 @@ class Main_Model extends Model
             ->where('date >=', $firstDayOfWeek)
             ->where('date <=', $lastDayOfWeek)
             ->where('status', 2);
-            
-        if(!empty($userID)) 
+
+        if (!empty($userID))
             $query->where('userID', $userID);
 
         $data = $query->get()->getResult();
@@ -517,7 +542,7 @@ class Main_Model extends Model
         return $serie;
     }
 
-    public function getCpanelChartMont($year , $userID='')
+    public function getCpanelChartMont($year, $userID = '')
     {
         $firstDay = date('Y-m-d', strtotime("$year-01-01"));
         $lastDay = date('Y-m-d', strtotime("$year-12-31"));
@@ -527,7 +552,7 @@ class Main_Model extends Model
             ->where('date <=', $lastDay)
             ->where('status', 2);
 
-            if(!empty($userID)) 
+        if (!empty($userID))
             $query->where('userID', $userID);
 
         $data = $query->get()->getResult();
@@ -543,25 +568,67 @@ class Main_Model extends Model
 
             for ($day = 1; $day <= $daysInMonth; $day++) {
 
-                for($i = 0; $i < $countData; $i++)
-                {
-                    if(date('d-m-Y', strtotime($day.'-'.$mont.'-'.$year)) == $data[$i]->dateCalc)
+                for ($i = 0; $i < $countData; $i++) {
+                    if (date('d-m-Y', strtotime($day . '-' . $mont . '-' . $year)) == $data[$i]->dateCalc)
                         $serie[$month] = $serie[$month] + $data[$i]->total;
                 }
             }
             $total = $total + $serie[$month];
         }
-        
+
         $serie['total'] = $total;
 
         return $serie;
     }
-    
+
     public function getBasket($id)
     {
         $query = $this->db->table('basket')
             ->where('id', $id);
 
         return $query->get()->getResult();
+    }
+
+    public function getPrintTicketData($basketID)
+    {
+        $return = array();
+        $queryBasket_dt = $this->db->table('basket_dt')
+        ->where('basketID', $basketID)
+        ->get()
+        ->getResult();
+
+        $user = $queryBasket_dt[0]->userName.' '.$queryBasket_dt[0]->userLastName;
+        $payType = $queryBasket_dt[0]->paymentMethod;
+
+        $return['user'] = $user;
+        $return['payType'] = $payType;
+
+        $queryBasketProduct = $this->db->table('basketproduct')
+        ->select('productID')
+        ->where('basketID', $basketID)
+        ->get()
+        ->getResult();
+
+        $countQueryBasketProduct = sizeof($queryBasketProduct);
+        $product = array();
+        $total = 0;
+
+        for($i = 0; $i < $countQueryBasketProduct; $i++)
+        {
+            $result = $this->getProductData($queryBasketProduct[$i]->productID);
+
+            $record = array();
+            $record['name'] = $result[0]->name;
+            $record['cost'] = $result[0]->cost;
+
+            $total = $total + $result[0]->cost;
+
+            $product[$i] = $record;
+        }
+
+        $return['product'] = $product;
+        $return['total'] = $total;
+
+        return $return;
     }
 }

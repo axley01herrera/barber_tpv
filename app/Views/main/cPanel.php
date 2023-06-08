@@ -6,10 +6,39 @@
             </h1>
         </div>
     </div>
+
     <div class="row mt-5">
         <div class="col-12">
             <!-- BTN LOGOUT -->
             <?php echo view('main/component/btnLogout'); ?>
+        </div>
+    </div>
+    <div class="card mt-3">
+        <div class="card-body">
+            <h6 class="font-size-xs text-uppercase">Producción 
+                <?php
+                    setlocale(LC_TIME, 'es_VE.UTF-8','esp'); // Establece la configuración regional en español
+                    $fechaActual = strftime('%e de %B del %Y'); // Obtiene la fecha actual formateada en español
+                    echo $fechaActual;
+                ?>
+            </h6>
+            <div class="row">
+                <div class="col-12 col-lg-4 mt-3 text-center">
+                    <h4 class="font-weight-bold d-flex align-items-center text-center">
+                        Efectivo <?php echo '€ ' . number_format((float) $totalDayProduction['cash'], 2, ".", ','); ?>
+                    </h4>
+                </div>
+                <div class="col-12 col-lg-4 mt-3 text-center">
+                    <h4 class="font-weight-bold d-flex align-items-center text-center">
+                        Tarjeta <?php echo '€ ' . number_format((float) $totalDayProduction['card'], 2, ".", ','); ?>
+                    </h4>
+                </div>
+                <div class="col-12 col-lg-4 mt-3 text-center">
+                    <h4 class="font-weight-bold d-flex align-items-center text-center">
+                        Total <?php echo '€ ' . number_format((float) $totalDayProduction['all'], 2, ".", ','); ?>
+                    </h4>
+                </div>
+            </div>
         </div>
     </div>
     <div class="row">
@@ -31,7 +60,7 @@
             <div class="card">
                 <div class="card-body">
                     <h6 class="font-size-xs text-uppercase">Recaudación de Hoy</h6>
-                    <h4 class="mt-4 font-weight-bold mb-2 d-flex align-items-center"><?php echo '€ ' . number_format((float) $totalDayProduction, 2, ".", ','); ?></h4>
+                    <h4 class="mt-4 font-weight-bold mb-2 d-flex align-items-center">Total <?php echo '€ ' . number_format((float) $totalDayProduction['all'], 2, ".", ','); ?></h4>
                     <div class="text-muted">Recaudación por Empleado</div>
                     <div id="chart"></div>
                 </div>
@@ -41,7 +70,7 @@
             <div class="card">
                 <div class="card-body">
                     <h6 class="font-size-xs text-uppercase">Recaudación Semanal </h6>
-                    <h4 class="mt-4 font-weight-bold mb-2 d-flex align-items-center"><?php echo '€ ' . number_format((float) $chartWeek['total'], 2, ".", ','); ?></h4>
+                    <h4 class="mt-4 font-weight-bold mb-2 d-flex align-items-center">Total <?php echo '€ ' . number_format((float) $chartWeek['total'], 2, ".", ','); ?></h4>
                     <div class="text-muted">Acumulada por todos los empleados</div>
                     <div id="chart2"></div>
                 </div>
@@ -53,7 +82,7 @@
             <div class="card">
                 <div class="card-body">
                     <h6 class="font-size-xs text-uppercase">Recaudación Mensual</h6>
-                    <h4 class="mt-4 font-weight-bold mb-2 d-flex align-items-center"><?php echo '€ ' . number_format((float) $chartMont['total'], 2, ".", ','); ?></h4>
+                    <h4 class="mt-4 font-weight-bold mb-2 d-flex align-items-center">Total <?php echo '€ ' . number_format((float) $chartMont['total'], 2, ".", ','); ?></h4>
                     <div class="text-muted">Acumulada por todos los empleados</div>
                     <div id="chart3"></div>
                     <div class="row">
@@ -61,12 +90,12 @@
                             <label for="">Año</label>
                             <select id="sel-year" class="form-select">
                                 <?php
-                                
+
                                 $start = $currentYear - 10;
                                 while ($start <= $currentYear) {
 
                                 ?>
-                                    <option <?php if($start == $year) echo 'selected';?> value="<?php echo $start; ?>"><?php echo $start; ?></option>
+                                    <option <?php if ($start == $year) echo 'selected'; ?> value="<?php echo $start; ?>"><?php echo $start; ?></option>
                                 <?php
                                     $start = $start + 1;
                                 } ?>

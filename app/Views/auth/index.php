@@ -19,6 +19,22 @@
     <link href="<?php echo base_url('assets/css/app.min.css'); ?>" id="app-style" rel="stylesheet" type="text/css" />
     <link href="<?php echo base_url('assets/libs/sweetalert/sweetalert2.css'); ?>" id="app-style" rel="stylesheet" type="text/css" />
 
+    <style>
+        .form-control {
+            display: block;
+            width: 100%;
+            padding: .47rem .75rem;
+            font-size: .9rem;
+            font-weight: 400;
+            line-height: 1.5;
+            color: #495057;
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid #495057;
+
+        }
+    </style>
+
     <!-- JAVASCRIPT -->
     <script src="<?php echo base_url('assets/libs/bootstrap/js/bootstrap.bundle.min.js'); ?>"></script>
     <script src="<?php echo base_url('assets/libs/metismenujs/metismenujs.min.js'); ?>"></script>
@@ -43,7 +59,15 @@
                             </div>
                             <div>
                                 <div class="form-floating form-floating-custom mb-3">
-                                    <input type="text" class="form-control required focus email" id="txt-email" placeholder="Email">
+                                    <select id="txt-email" class="form-select required focus">
+                                        <option hidden value="">Seleccione su usuario</option>
+                                        <?php
+                                        $count = sizeof($users);
+                                        for ($i = 0; $i < $count; $i++) {
+                                        ?>
+                                            <option value="<?php echo $users[$i]->email; ?>"><?php echo $users[$i]->email; ?></option>
+                                        <?php } ?>
+                                    </select>
                                     <label for="txt-email">Email</label>
                                     <div class="form-floating-icon">
                                         <i class="uil uil-envelope-alt"></i>
@@ -76,8 +100,8 @@
         </div>
     </div>
     <?php echo view('global/form_validation'); ?>
-
     <script>
+        $('#txt-email').focus();
         $('#btn-login').on('click', function() {
 
             let resultCheckRequiredValues = checkRequiredValues('required');

@@ -24,7 +24,7 @@ class App extends BaseConfig
      * @var string
      */
 
-    public $baseURL = 'http://barbertpv'; // LOCAL
+    public $baseURL = 'http://barber_tpv'; // LOCAL
   
 
     /**
@@ -110,7 +110,7 @@ class App extends BaseConfig
      *
      * @var string
      */
-    public $appTimezone = 'America/Chicago';
+    public $appTimezone = 'Atlantic/Canary';
 
     /**
      * --------------------------------------------------------------------------

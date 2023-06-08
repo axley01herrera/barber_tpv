@@ -25,15 +25,39 @@
             if ($userLoggedID == $employee[0]->id)
                 echo view('main/component/navTPV');
             ?>
-            <div class="card">
-                <div class="card-body">
-                    <h6 class="font-size-xs text-uppercase">Recaudación de Hoy</h6>
-                    <h4 class="mt-4 font-weight-bold mb-2 d-flex align-items-center"><?php echo '€ ' . number_format((float) $totalDayProduction, 2, ".", ','); ?></h4>
-                </div>
-            </div>
         </div>
         <div class="col-12 col-lg-8 mt-5">
             <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 class="font-size-xs text-uppercase">Producción
+                                <?php
+                                setlocale(LC_TIME, 'es_VE.UTF-8', 'esp'); // Establece la configuración regional en español
+                                $fechaActual = strftime('%e de %B del %Y'); // Obtiene la fecha actual formateada en español
+                                echo $fechaActual; // Muestra: martes 6 de junio del 2023
+                                ?>
+                            </h6>
+                            <div class="row">
+                                <div class="col-12 col-lg-4 mt-3 text-center">
+                                    <h4 class="font-weight-bold d-flex align-items-center text-center">
+                                        Efectivo <?php echo '€ ' . number_format((float) $totalDayProduction['cash'], 2, ".", ','); ?>
+                                    </h4>
+                                </div>
+                                <div class="col-12 col-lg-4 mt-3 text-center">
+                                    <h4 class="font-weight-bold d-flex align-items-center text-center">
+                                        Tarjeta <?php echo '€ ' . number_format((float) $totalDayProduction['card'], 2, ".", ','); ?>
+                                    </h4>
+                                </div>
+                                <div class="col-12 col-lg-4 mt-3 text-center">
+                                    <h4 class="font-weight-bold d-flex align-items-center text-center">
+                                        Total <?php echo '€ ' . number_format((float) $totalDayProduction['all'], 2, ".", ','); ?>
+                                    </h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="col-12">
                     <div class="card ">
                         <div class="card-body">
@@ -48,6 +72,7 @@
                                             <th hidden><strong>Apellido</strong></th>
                                             <th><strong>Tipo de Cobro</strong></th>
                                             <th class="text-end"><strong>Total</strong></th>
+                                            <th class="text-end"></th>
                                         </tr>
                                     </thead>
                                 </table>
@@ -59,29 +84,30 @@
                     <div class="card">
                         <div class="card-body">
                             <h6 class="font-size-xs text-uppercase">Recaudación Semanal</h6>
-                            <h4 class="mt-4 font-weight-bold mb-2 d-flex align-items-center"><?php echo '€ ' . number_format((float) $totalDayProduction, 2, ".", ','); ?></h4>
+                            <h4 class="mt-4 font-weight-bold mb-2 d-flex align-items-center"><?php echo '€ ' . number_format((float) $chartWeek['total'], 2, ".", ','); ?></h4>
                             <div class="text-muted">Acumulada por el empleado</div>
                             <div id="chartWeek"></div>
                         </div>
                     </div>
                 </div>
                 <div class="col-12">
-            <div class="card">
-                <div class="card-body">
-                    <h6 class="font-size-xs text-uppercase">Recaudación Mensual</h6>
-                    <h4 class="mt-4 font-weight-bold mb-2 d-flex align-items-center"><?php echo '€ ' . number_format((float) $totalDayProduction, 2, ".", ','); ?></h4>
-                    <div class="text-muted">Acumulada por el empleado</div>
-                    <div id="chartMont"></div>
-                    
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 class="font-size-xs text-uppercase">Recaudación Mensual</h6>
+                            <h4 class="mt-4 font-weight-bold mb-2 d-flex align-items-center"><?php echo '€ ' . number_format((float) $chartMont['total'], 2, ".", ','); ?></h4>
+                            <div class="text-muted">Acumulada por el empleado</div>
+                            <div id="chart3"></div>
+
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
             </div>
         </div>
     </div>
 </div>
 
 <script>
+
     var dataTable = $('#dataTable').DataTable({
 
         destroy: true,
@@ -128,8 +154,16 @@
                 data: 'paymentType',
             },
             {
-                data: 'Total',
-                class: 'text-end'
+                data: 'total',
+                class: 'text-end',
+                searchable: false,
+                orderable: false
+            },
+            {
+                data: 'print',
+                class: 'text-end',
+                searchable: false,
+                orderable: false
             }
         ],
     });
@@ -173,8 +207,6 @@
         });
 
     });
-
-    
 
     var options2 = {
         series: [{
@@ -336,7 +368,23 @@
         }
     };
 
-    var chartMont = new ApexCharts(document.querySelector("#chartMont"), options3);
-    chartMont.render();
+    var chart3 = new ApexCharts(document.querySelector("#chart3"), options3);
+    chart3.render();
+
+    dataTable.on('click', '.btn-print', function(event) {
+     
+        $.ajax({
+
+            type: "post",
+            url: "<?php echo base_url('Main/printTicket');?>",
+            data: {
+                'id': $(this).attr('data-id')
+            },
+            dataType: "html",
+            success: function (response) {
+                $('#main-content').html(response);
+            }
+        });
+    });
 
 </script>

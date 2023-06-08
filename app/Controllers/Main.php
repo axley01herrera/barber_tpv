@@ -25,38 +25,36 @@ class Main extends BaseController
         }
 
         $objModel = new Main_Model;
+        $data = array();
+
+        if (!empty($this->request->getPostGet('year')))
+            $year = $this->request->getPostGet('year');
+        else
+            $year = date('Y');
+
+        $data['year'] = $year;
+        $data['currentYear'] = date('Y');
 
         if ($this->session->get('role') == 1) // ADMIN
         {
-            if(!empty($this->request->getPostGet('year')))
-                $year = $this->request->getPostGet('year');
-            else
-                $year = date('Y');
-
-            $data = array();
             $data['role'] = $this->session->get('role');
             $data['totalDayProduction'] = $objModel->getTotalDayProduction();
             $data['charData'] = $objModel->getCpanelChartEmployees();
             $data['chartWeek'] = $objModel->getCpanelChartWeek();
             $data['chartMont'] = $objModel->getCpanelChartMont($year);
-            $data['year'] = $year;
-            $data['currentYear'] = date('Y');
             $data['page'] = 'main/cPanel';
 
             return view('main/index', $data);
-        }
-        elseif($this->session->get('role') == 2) // EMPLOYEE
+        } elseif ($this->session->get('role') == 2) // EMPLOYEE
         {
             $userID = (int) $this->session->get('id');
             $employee = $objModel->getUserData($userID);
-
-            $data = array();
             $data['role'] = $this->session->get('role');
             $data['employee'] = $employee;
             $data['page'] = 'main/employeeDetail';
             $data['totalDayProduction'] = $objModel->getTotalDayProduction($userID);
             $data['chartWeek'] = $objModel->getCpanelChartWeek($userID);
-            $data['chartMont'] = $objModel->getCpanelChartMont($userID);            
+            $data['chartMont'] = $objModel->getCpanelChartMont($year, $userID);
             $data['userLoggedID'] = (int) $this->session->get('id');
 
             return view('main/index', $data);
@@ -112,12 +110,12 @@ class Main extends BaseController
             $switch = '';
 
             if ($result[$i]->status == 1) {
-                $status = '<span class="badge badge-soft-success">Activo</span>';
+                $status = '<span class="badge bg-success">Activo</span>';
                 $switch = '<div style="margin-left: 44px;" class="form-check form-switch form-switch-md mb-2">
                                                 <input data-id="' . $result[$i]->id . '" data-status="' . $result[$i]->status . '" data-role="' . $result[$i]->role . '"class="form-check-input switch" type="checkbox" id="flexSwitchCheckChecked" checked />
                                             </div>';
             } else {
-                $status = '<span class="badge badge-soft-danger">Inactivo</span>';
+                $status = '<span class="badge bg-danger">Inactivo</span>';
                 $switch = '<div style="margin-left: 44px;" class="form-check form-switch form-switch-md mb-2">
                                                 <input data-id="' . $result[$i]->id . '" data-status="' . $result[$i]->status . '" data-role="' . $result[$i]->role . '"class="form-check-input switch" type="checkbox" id="flexSwitchCheckChecked" />
                                             </div>';
@@ -126,9 +124,9 @@ class Main extends BaseController
             $role = '';
 
             if ($result[$i]->role == 1) {
-                $role = '<span class="badge badge-soft-primary">Administrador</span>';
+                $role = '<span class="badge bg-primary">Administrador</span>';
             } else {
-                $role = '<span class="badge badge-soft-secondary">Empleado</span>';
+                $role = '<span class="badge bg-secondary">Empleado</span>';
             }
 
             $clave = '';
@@ -149,7 +147,7 @@ class Main extends BaseController
             $col['role'] = $role;
             $col['status'] = $status;
             $col['switch'] = $switch;
-            $col['action'] = $clave . $btn_edit . $btn_delete;
+            $col['action'] = $clave . $btn_edit;
 
             $row[$i] =  $col;
         }
@@ -178,16 +176,23 @@ class Main extends BaseController
             return view('main/index', $data);
         }
 
+        if (!empty($this->request->getPostGet('year')))
+            $year = $this->request->getPostGet('year');
+        else
+            $year = date('Y');
+
+        $data = array();
+        $data['year'] = $year;
+        $data['currentYear'] = date('Y');
+
         $userLoggedID = (int) $this->session->get('id');
         $userID = (int) $this->request->uri->getSegment(3);
 
-        if($this->session->get('role') == 2)
-        {
+        if ($this->session->get('role') == 2) {
             if ($userLoggedID != $userID) {
-                $data = array();
                 $data['page'] = 'main/logout';
                 $data['msg'] = 'Sessión Expirada';
-    
+
                 return view('main/index', $data);
             }
         }
@@ -195,14 +200,12 @@ class Main extends BaseController
         $objModel = new Main_Model;
         $employee = $objModel->getUserData($userID);
 
-        $data = array();
         $data['role'] = $this->session->get('role');
         $data['employee'] = $employee;
         $data['totalDayProduction'] = $objModel->getTotalDayProduction($userID);
         $data['chartWeek'] = $objModel->getCpanelChartWeek($userID);
-        $data['chartMont'] = $objModel->getCpanelChartMont($userID);
         $data['userLoggedID'] = (int) $this->session->get('id');
-
+        $data['chartMont'] = $objModel->getCpanelChartMont($year, $userID);
         $data['page'] = 'main/employeeDetail';
 
         return view('main/index', $data);
@@ -477,12 +480,12 @@ class Main extends BaseController
             $switch = '';
 
             if ($result[$i]->status == 1) {
-                $status = '<span class="badge badge-soft-success">Activo</span>';
+                $status = '<span class="badge bg-success">Activo</span>';
                 $switch = '<div style="margin-left: 44px;" class="form-check form-switch form-switch-md mb-2">
                                                 <input data-id="' . $result[$i]->id . '" data-status="' . $result[$i]->status . '" class="form-check-input switch" type="checkbox" id="flexSwitchCheckChecked" checked />
                                             </div>';
             } else {
-                $status = '<span class="badge badge-soft-danger">Inactivo</span>';
+                $status = '<span class="badge bg-danger">Inactivo</span>';
                 $switch = '<div style="margin-left: 44px;" class="form-check form-switch form-switch-md mb-2">
                                                 <input data-id="' . $result[$i]->id . '" data-status="' . $result[$i]->status . '" class="form-check-input switch" type="checkbox" id="flexSwitchCheckChecked" />
                                             </div>';
@@ -496,7 +499,7 @@ class Main extends BaseController
             $col['cost'] = '€ ' . number_format((float) $result[$i]->cost, 2, ".", ',');
             $col['status'] = $status;
             $col['switch'] = $switch;
-            $col['action'] = $btn_editProduct . $btn_deleteProduct;
+            $col['action'] = $btn_editProduct;
 
             $row[$i] =  $col;
         }
@@ -701,7 +704,7 @@ class Main extends BaseController
         $dataBasket = array();
         $dataBasket['userID'] = $this->session->get('id');
         $dataBasket['dateCalc'] = $today;
-        
+
         $objModel = new Main_Model;
         $result_create_basket = $objModel->createBasket($dataBasket);
 
@@ -787,16 +790,15 @@ class Main extends BaseController
             return view('main/index', $data);
         }
 
-        
+
         $data = array();
         $data['basketID'] = $this->request->getPost('basketID');
         $data['action'] = $this->request->getPost('action');
-        
-        if($data['action'] == 'create')
+
+        if ($data['action'] == 'create')
             $data['total'] = $this->request->getPost('total');
-           
-        if($data['action'] == 'update')
-        {
+
+        if ($data['action'] == 'update') {
             $objModel = new Main_Model;
             $result =  $objModel->getBasket($data['basketID']);
 
@@ -806,7 +808,7 @@ class Main extends BaseController
 
         $data['title'] = 'Seleccione un método de pago';
         $data['userID'] = $this->session->get('id');
-            
+
         return view('modals/selectPaymentMethod', $data);
     }
 
@@ -839,8 +841,7 @@ class Main extends BaseController
 
         $dataTableRequest = $_REQUEST;
 
-
-        if(!empty($this->request->getPost('userID')))
+        if (!empty($this->request->getPost('userID')))
             $userID = $this->request->getPost('userID');
 
         $params = array();
@@ -860,22 +861,25 @@ class Main extends BaseController
 
         for ($i = 0; $i < $totalRows; $i++) {
 
+            $print = '<button class="ms-1 me-1 btn btn-sm btn-warning btn-print" data-id="' . $result[$i]->basketID . '"><span class="mdi mdi-printer" title="Imprimir Ticket"></span></button>';
+
             $col = array();
             $col['date'] = $result[$i]->formattedDate;
             $col['ticketID'] = $result[$i]->basketID;
             $col['userName'] = $result[$i]->userName;
             $col['userlastName'] = $result[$i]->userLastName;
-            if($this->session->get('id') == $result[$i]->userID)
-                $col['paymentType'] = '<span class="ms-0 me-1"><i data-pay-type="'.$result[$i]->payType.'" data-basket-id="'.$result[$i]->basketID.'" style="cursor: pointer;" class="edit-payment-method mdi mdi-comment-edit-outline text-warning"></i></span>'.$result[$i]->paymentMethod ;
+            if ($this->session->get('id') == $result[$i]->userID)
+                $col['paymentType'] = '<span class="ms-0 me-1"><i data-pay-type="' . $result[$i]->payType . '" data-basket-id="' . $result[$i]->basketID . '" style="cursor: pointer;" class="edit-payment-method mdi mdi-comment-edit-outline text-warning"></i></span>' . $result[$i]->paymentMethod;
             else
-                $col['paymentType'] = '<span class="ms-0 me-1"></span>'.$result[$i]->paymentMethod ;
-            $col['Total'] = '€ ' . number_format((float) $result[$i]->total, 2, ".", ',');
-     
+                $col['paymentType'] = '<span class="ms-0 me-1"></span>' . $result[$i]->paymentMethod;
+            $col['total'] = '€ ' . number_format((float) $result[$i]->total, 2, ".", ',');
+            $col['print'] = $print ;
+
             $row[$i] =  $col;
         }
 
         if ($totalRows > 0)
-            $totalRecords = $objModel->getTotalBasketDT();
+            $totalRecords = $objModel->getTotalBasketDT($userID);
 
         $data = array();
         $data['draw'] = $dataTableRequest['draw'];
@@ -884,6 +888,19 @@ class Main extends BaseController
         $data['data'] = $row;
 
         return json_encode($data);
+    }
+
+    public function printTicket()
+    {
+        $id = $this->request->getPost('id');
+
+        $objModel = new Main_Model;
+        $result = $objModel->getPrintTicketData($id);
+
+        $data = array();
+        $data['ticket'] = $result;
+        
+        return view('main/printTicket', $data);
     }
 
 }
