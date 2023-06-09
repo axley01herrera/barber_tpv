@@ -24,7 +24,7 @@ class App extends BaseConfig
      * @var string
      */
 
-    public $baseURL = 'http://barber_tpv'; // LOCAL
+    public $baseURL = 'http://barbertpv'; // LOCAL
   
 
     /**
