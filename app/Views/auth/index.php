@@ -83,6 +83,9 @@
                                 <div class="mt-3">
                                     <button id="btn-login" type="button" class="btn btn-info w-100">Entrar</button>
                                 </div>
+                                <div class="mt-2">
+                                    <a class="w-100 btn btn-warning" href="<?php echo base_url('Main/helper')?>">Consultar Ayuda</a>
+                                </div>
                             </div>
                         </div>
                     </div>

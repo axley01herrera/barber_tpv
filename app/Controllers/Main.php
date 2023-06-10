@@ -13,6 +13,15 @@ class Main extends BaseController
         $this->session = session();
     }
 
+
+    public function helper()
+    {
+        $data = array();
+        $data['page'] = 'main/helper';
+
+        return view('main/index', $data);
+    }
+
     public function index()
     {
         # VERIFY SESSION
