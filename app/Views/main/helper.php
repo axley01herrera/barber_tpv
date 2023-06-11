@@ -1,48 +1,48 @@
 <body>
   <nav class="navbar navbar-expand-lg navbar-light bg-light contenedorPrincipal">
     <div class="container-fluid">
-      <a class="navbar-brand btn btn-bg-transparent text-primary fw-bold fst-italic p-3" href="<?php echo base_url('Main/index') ?>">AUTENTICARSE</a>
+      <a class="navbar-brand text-primary fw-bold fst-italic p-4 fs-3 btn-autenticarse" href="<?php echo base_url('Main/index') ?>">INICIAR SESION</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNavDropdown">
-        <ul class="navbar-nav">
+        <ul class="navbar-nav flex-column">
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle textDropDowns" href="#" id="navbarDropdownMenuLink " role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <a class="nav-link dropdown-toggle textDropDowns m-2" href="#" id="navbarDropdownMenuLink " role="button" data-bs-toggle="dropdown" aria-expanded="false">
               Iniciando Sesión
             </a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-              <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#pasosIniciarSesionModal"> Como Iniciar Sesión</a></li>
-              <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#estadoModal">Estado de Cuenta</a></li>
+              <li><a class="dropdown-item li-DropDowns" href="#" data-bs-toggle="modal" data-bs-target="#pasosIniciarSesionModal"> Como Iniciar Sesión</a></li>
+              <li><a class="dropdown-item li-DropDowns" href="#" data-bs-toggle="modal" data-bs-target="#estadoModal">Estado de Cuenta</a></li>
             </ul>
           </li>
         </ul>
       </div>
       <div class="collapse navbar-collapse" id="navbarNavDropdown">
-        <ul class="navbar-nav ">
+        <ul class="navbar-nav flex-column">
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle textDropDowns" href="#" id="navbarDropdownMenuLink " role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <a class="nav-link dropdown-toggle textDropDowns m-2" href="#" id="navbarDropdownMenuLink " role="button" data-bs-toggle="dropdown" aria-expanded="false">
               Operaciones con Empleados
             </a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-              <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#crearEmpleadoModal">Crear Empleado</a></li>
-              <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#editarEmpleadoModal">Editar Empleado</a></li>
-              <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#eliminarEmpleadoModal">Eliminar Empleado</a></li>
-              <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#actDsactEmpleadoModal">Activar / Desactivar</a></li>
+              <li><a class="dropdown-item li-DropDowns" href="#" data-bs-toggle="modal" data-bs-target="#crearEmpleadoModal">Crear Empleado</a></li>
+              <li><a class="dropdown-item li-DropDowns" href="#" data-bs-toggle="modal" data-bs-target="#editarEmpleadoModal">Editar Empleado</a></li>
+              <li><a class="dropdown-item li-DropDowns" href="#" data-bs-toggle="modal" data-bs-target="#eliminarEmpleadoModal">Eliminar Empleado</a></li>
+              <li><a class="dropdown-item li-DropDowns" href="#" data-bs-toggle="modal" data-bs-target="#actDsactEmpleadoModal">Activar / Desactivar</a></li>
             </ul>
           </li>
         </ul>
       </div>
       <div class="collapse navbar-collapse" id="navbarNavDropdown">
-        <ul class="navbar-nav ">
+        <ul class="navbar-nav flex-column">
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle textDropDowns" href="#" id="navbarDropdownMenuLink " role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <a class="nav-link dropdown-toggle textDropDowns m-2" href="#" id="navbarDropdownMenuLink " role="button" data-bs-toggle="dropdown" aria-expanded="false">
               Operaciones con Productos
             </a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-              <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#crearProductoModal">Crear Producto</a></li>
-              <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#editarProductoModal">Editar Producto</a></li>
-              <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#actDsactProductoModal">Activar / Desactivar</a></li>
+              <li><a class="dropdown-item li-DropDowns" href="#" data-bs-toggle="modal" data-bs-target="#crearProductoModal">Crear Producto</a></li>
+              <li><a class="dropdown-item li-DropDowns" href="#" data-bs-toggle="modal" data-bs-target="#editarProductoModal">Editar Producto</a></li>
+              <li><a class="dropdown-item li-DropDowns" href="#" data-bs-toggle="modal" data-bs-target="#actDsactProductoModal">Activar / Desactivar</a></li>
             </ul>
           </li>
         </ul>
@@ -242,6 +242,7 @@
 </html>
 
 <style>
+  
   .contenedorPrincipal {
     box-shadow: 0px 0px 10px black;
     border-radius: 10px;
@@ -253,18 +254,38 @@
   }
 
   .textDropDowns:hover {
-    background-color: #038edc;
-    transition: 0.5s;
-    border-radius: 5px;
-    box-shadow: 2px 4px 8px #038edc;
-    text-shadow: 1px 1px 7px white;
+    box-shadow: 0px 0px 10px #038edc;
+    transition: 1s;
   }
+  
+  .li-DropDowns{
+    border-radius: 5px;
+  }
+
+  .li-DropDowns:hover{
+    box-shadow: 0px 0px 17px #cdcdcd;
+    transition: 1s;
+  }
+
+  .btn-autenticarse{
+    border-radius: 10px;
+  }
+
+  .btn-autenticarse:hover{
+    box-shadow: 0px 0px 17px #038edc;
+    transition: 1s;
+  }
+
 </style>
 
 <script>
-  const textDropDowns = document.querySelector('.textDropDowns');
 
-  textDropDowns.addEventListener('mouseout', () => {
-    textDropDowns.style.transition = '1s';
+  const elementos = document.querySelectorAll('.textDropDowns, .btn-autenticarse, .li-DropDowns');
+
+elementos.forEach(elemento => {
+  elemento.addEventListener('mouseout', () => {
+    elemento.style.transition = '1s';
   });
+});
+
 </script>
