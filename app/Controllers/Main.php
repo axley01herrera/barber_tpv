@@ -919,5 +919,4 @@ class Main extends BaseController
         
         return view('main/printTicket', $data);
     }
-
 }
