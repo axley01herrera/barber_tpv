@@ -152,8 +152,14 @@ class Main extends BaseController
             $row[$i] =  $col;
         }
 
-        if ($totalRows > 0)
-            $totalRecords = $objModel->getTotalUser();
+        if ($totalRows > 0) {
+
+            if(empty($params['search']))
+                $totalRecords = $objModel->getTotalUser();
+            else
+                $totalRecords = $totalRows;
+        
+        }
 
         $data = array();
         $data['draw'] = $dataTableRequest['draw'];
@@ -504,9 +510,15 @@ class Main extends BaseController
             $row[$i] =  $col;
         }
 
-        if ($totalRows > 0)
-            $totalRecords = $objModel->getTotalProducts();
+        if ($totalRows > 0) {
 
+            if(empty($params['search']))
+                $totalRecords = $objModel->getTotalProducts();
+            else
+                $totalRecords = $totalRows;
+
+        }
+        
         $data = array();
         $data['draw'] = $dataTableRequest['draw'];
         $data['recordsTotal'] = intval($totalRecords);
@@ -878,8 +890,13 @@ class Main extends BaseController
             $row[$i] =  $col;
         }
 
-        if ($totalRows > 0)
-            $totalRecords = $objModel->getTotalBasketDT($userID);
+        if ($totalRows > 0) {
+
+            if(empty($params['search']))
+                $totalRecords = $objModel->getTotalBasketDT($userID);
+            else
+                $totalRecords = $totalRows;
+        }
 
         $data = array();
         $data['draw'] = $dataTableRequest['draw'];
