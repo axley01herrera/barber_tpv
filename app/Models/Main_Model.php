@@ -599,15 +599,17 @@ class Main_Model extends Model
 
         $user = $queryBasket_dt[0]->userName.' '.$queryBasket_dt[0]->userLastName;
         $payType = $queryBasket_dt[0]->paymentMethod;
+        $date = $queryBasket_dt[0]->formattedDate;
 
         $return['user'] = $user;
         $return['payType'] = $payType;
+        $return['date'] = $date;
 
         $queryBasketProduct = $this->db->table('basketproduct')
         ->select('productID')
         ->where('basketID', $basketID)
         ->get()
-        ->getResult();
+        ->getResult(); 
 
         $countQueryBasketProduct = sizeof($queryBasketProduct);
         $product = array();

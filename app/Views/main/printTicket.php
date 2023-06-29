@@ -24,6 +24,7 @@
     <div class="col-12 text-center">
         <p>Total : <?php echo '€ ' . number_format((float) $ticket['total'], 2, ".", ','); ?></p>
         <p>Tipo de Pago: <br> <?php echo $ticket['payType']; ?></p>
+        <p>Fecha: <br> <?php echo $ticket['date']; ?></p>
         <h4>Gracias por su visita!</h4>
     </div>
 </div>

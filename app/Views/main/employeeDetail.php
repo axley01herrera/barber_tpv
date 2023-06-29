@@ -371,7 +371,7 @@
     var chart3 = new ApexCharts(document.querySelector("#chart3"), options3);
     chart3.render();
 
-    dataTable.on('click', '.btn-print', function(event) {
+    dataTable.on('click', '.btn-print', function(event) { // PRINT TICKET
      
         $.ajax({
 
